@@ -14,7 +14,7 @@ with open("admin_data.txt", encoding="utf-8") as f:
     ADMIN_PHONE = f.readline().replace("\n", "")
     ADMIN_EMAIL = f.readline().replace("\n", "")
 
-SHOP_NAME = "RegLib"
+SHOP_NAME = "LibReg"
 COMPANY_NAME = "[Название компании]"
 COMPANY_ABOUT = "[Описание магазина]"
 
