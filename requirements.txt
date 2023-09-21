@@ -1,0 +1,5 @@
+SQLAlchemy~=1.4.49
+Flask~=2.3.3
+Werkzeug~=2.3.7
+flask-login~=0.6.2
+Pillow~=10.0.0

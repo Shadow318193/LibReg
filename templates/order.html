@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block main_content %}
+<div class="text-center pt-1 pb-5">
+    <a href="/orders" style="width: 80%;" class="btn btn-primary py-2">Вернуться к заказам</a>
+</div>
+<h1 class="text-theme-primary indent border-bottom border-color-theme mb-3">Заказ №{{ order.id }}:</h1>
+<div class="row indent w-100 ms-0">
+    {% for product in products_list %}
+    <div class="col d-flex justify-content-center px-0">
+        <div class="card card-theme text-theme-primary border-color-theme m-3 product-width">
+            <a href="/products/{{ product.id }}" class="border-bottom border-color-theme"><img src="/static/media/from_users/{{ product.image_preview }}" style="background-color: #fff; object-fit: cover;" class="card-img-top" alt="{{ product.name }}"></a>
+            <div class="card-body d-flex justify-content-between" style="flex-direction: column;">
+                <div class="pb-3">
+                    <h5 class="card-title text-center mb-3">{{ product.name }}</h5>
+                    <p class="card-text text-center">Цена: <b>{{ products_price[product.id] }}₽</b> на момент покупки</p>
+                    <p class="card-text text-center">Кол-во: <b>{{ products_in_order[product.id] }} шт.</b></p>
+                    <p class="card-text text-center">Стоимость: <b>{{ products_price[product.id] * products_in_order[product.id] }}₽</b></p>
+                </div>
+                <div class="text-center py-1">
+                    <a href="/products/{{ product.id }}" class="btn btn-primary btn-auto-size">Подробнее</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<h1 class="text-theme-primary indent border-top border-color-theme mt-3 pt-3 pb-3">Итоговая стоимость: {{ order.price }}₽</h1>
+<h3 class="text-theme-primary indent pb-1">Имя заказчика: {{ order.poster_name }}</h3>
+<h3 class="text-theme-primary indent pb-3">Адрес: {{ order.address }}</h3>
+<h1 class="text-theme-primary indent">Статус: {{ ORDER_STATUS[order.status] }}</h1>
+{% if current_user.id == order.poster_id or current_user.is_admin or current_user.is_moderator %}
+<form method="post" class="text-theme-primary text-center border-top border-color-theme pt-4 mt-3">
+    {% if order.status == 0 %}
+    <button type="submit" style="width: 80%;" name="cancel" class="btn btn-danger py-2">Отменить заказ{% if (current_user.is_admin or current_user.is_moderator) and not current_user.id == order.poster_id %} (ВНИМАНИЕ: отмена чужого заказа без причины карается лишением модераторских прав){% endif %}</button>
+    {% else %}
+    <button disabled style="width: 80%;" class="btn btn-danger py-2">Отменить заказ нельзя</button>
+    {% endif %}
+</form>
+{% endif %}
+{% if current_user.is_admin or current_user.is_moderator %}
+<h1 class="text-theme-primary text-center indent border-top border-color-theme pt-3 mt-4">Инструменты модератора:</h1>
+<form method="post" class="text-center pt-3 pb-5">
+    {% if order.status + 1 in ORDER_STATUS %}
+    <button type="submit" name="next_step" value="{{ order.status }}" style="width: 80%;" class="btn btn-primary py-2">Поменять статус на "{{ ORDER_STATUS[order.status + 1] }}"</button>
+    {% else %}
+    <button disabled style="width: 80%;" class="btn btn-primary py-2">Менять статус нельзя: это последняя стадия заказа</button>
+    {% endif %}
+</form>
+{% endif %}
+{% endblock %}

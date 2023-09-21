@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block main_content %}
+<div class="alert border-round alert-danger" role="alert">
+    <h1 class="text-center">Ошибка {{ page_name }}</h1>
+</div>
+<h2 class="text-center py-3 my-3 border-top border-bottom border-color-theme text-theme-primary">{{ code }}</h2>
+<div class="text-center"><a href="/" class="btn btn-primary w-100">Главная страница</a></div>
+{% endblock %}

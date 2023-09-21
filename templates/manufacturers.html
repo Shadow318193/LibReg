@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block main_content %}
+{% if current_user.is_admin or current_user.is_moderator %}
+<h1 class="text-theme-primary text-center indent">Инструменты модератора:</h1>
+<div class="text-center pt-3 pb-5">
+    <a href="/add_manufacturer" style="width: 80%;" class="btn btn-primary py-2">Добавить производителя</a>
+</div>
+{% endif %}
+<h3 class="text-theme-primary indent border-bottom border-color-theme">Все производители:</h3>
+{% if manufacturers_list %}
+<div class="row indent w-100 ms-0">
+    {% for manufacturer in manufacturers_list %}
+    <div class="col d-flex justify-content-center px-0">
+        <div class="card {% if manufacturer.toggle %}card-theme{% else %}card-theme-danger{% endif %} text-theme-primary border-color-theme m-3 product-width">
+            <a href="/manufacturers/{{ manufacturer.id }}" class="border-bottom {% if manufacturer.toggle %}border-color-theme{% else %}border-color-theme-danger{% endif %}"><img src="/static/media/from_users/{{ manufacturer.logo_preview }}" style="background-color: #fff; object-fit: contain;" class="card-img-top p-2" alt="{{ manufacturer.name }}"></a>
+            <div class="card-body d-flex justify-content-between" style="flex-direction: column;">
+                <h5 class="card-title text-center">{{ manufacturer.name }}</h5>
+                <div class="text-center py-1">
+                    <a href="/manufacturers/{{ manufacturer.id }}" class="btn btn-primary btn-auto-size w-100">Подробнее</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% elif request.args.get("search") %}
+<h3 class="text-theme-primary text-center">Производители с таким названием не найдены</h3>
+{% else %}
+<h3 class="text-theme-primary text-center">Производители на данный момент отсутствуют</h3>
+{% endif %}
+{% endblock %}

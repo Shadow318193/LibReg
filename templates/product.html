@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block main_content %}
+<div class="text-center border-bottom border-color-theme pt-1 pb-3 mb-3">
+    <a href="/products" style="width: 80%;" class="btn btn-primary py-2">Вернуться к товарам</a>
+</div>
+<div class="row indent w-100 ms-0 pb-4">
+    <div class="col">
+        <div id="carouselExampleIndicators" style="min-width: 18rem;" class="carousel slide">
+            {% if product_images_l > 1 %}
+            <div class="carousel-indicators" style="background-color: #000; opacity: 0.33; margin-bottom: 5px;">
+                {% for image in product_images %}
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ loop.index - 1 }}" {% if loop.index == 1 %}class="active" aria-current="true"{% endif %} aria-label="{{ image }}"></button>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="carousel-inner">
+                {% for image in product_images %}
+                <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+                    <a href="/static/media/from_users/{{ image }}"><img src="/static/media/from_users/{{ image }}" style="object-fit: cover; background-color: #fff;" class="d-block w-100 border border-round" alt="Картинка №{{ loop.index }}"></a>
+                </div>
+                {% endfor %}
+            </div>
+            {% if product_images_l > 1 %}
+            <button style="background-color: #000; margin-bottom: 5px;" class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Назад</span>
+            </button>
+            <button style="background-color: #000; margin-bottom: 5px;" class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Дальше</span>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col text-theme-primary">
+        <h1 class="pb-3 pt-2 text-end">{{ product.name }}</h1>
+        <h2 class="pb-3 text-end">{{ product.price }}₽</h2>
+        <p class="pb-3 border-bottom border-color-theme text-about">{{ product.about }}</p>
+        <h3 class="pb-3 border-color-theme">Производитель: <a class="nav-link" href="/manufacturers/{{ manufacturer.id }}">{{ manufacturer.name }}</a></h3>
+        <div class="border-bottom border-color-theme pb-3"><a href="/manufacturers/{{ manufacturer.id }}"><img src="/static/media/from_users/{{ manufacturer.logo }}" style="object-fit: contain; background-color: #fff;" class="w-100 h-100 border border-round" alt="{{ manufacturer.name }}"></a></div>
+        <h3 class="pt-3">Тэги:</h3>
+        <ul class="pb-3 border-bottom border-color-theme">
+            {% for tag in product_tags %}
+            <li>{{ tag }}</li>
+            {% endfor %}
+        </ul>
+        {% if product.toggle %}
+        <form class="text-center pt-3" method="post">
+            {% if product.id|string in session["cart"] %}
+            <h3>В корзине: {{ session["cart"][product.id|string] }}</h3>
+            {% endif %}
+            <div class="pb-5 d-flex justify-content-center">
+                <input type="number" name="count" class="form-control form-control-round border-color-theme input-color-theme font-auto" style="width: 80%;" placeholder="Кол-во штук...">
+            </div>
+            <button type="submit" name="put_into_cart" class="btn btn-primary" style="width: 80%;">{% if product.id|string in session["cart"] %}Изменить кол-во{% else %}Добавить в корзину{% endif %}</button>
+            {% if product.id|string in session["cart"] %}
+            <div class="pt-2 pb-4">
+                <button type="submit" name="remove_from_cart" class="btn btn-primary" style="width: 80%;">Удалить из корзины</button>
+            </div>
+            {% endif %}
+        </form>
+        {% else %}
+        <h1 class="text-center pt-3">На данный момент товар заказать нельзя</h1>
+        {% endif %}
+    </div>
+</div>
+<div class="text-center border-color-theme border-top pt-4 pb-4">
+    <a href="/cart" style="width: 80%;" class="btn btn-primary py-4">Отправиться в корзину</a>
+</div>
+{% if current_user.is_admin or current_user.is_moderator %}
+<h1 class="text-theme-primary text-center indent border-color-theme border-top pt-4">Инструменты модератора:</h1>
+<p class="py-2 text-theme-primary text-center indent">Товар в последний раз редактировался пользователем {{ poster.name }} (ID - {{ poster.id }}, права - {% if poster.is_admin %}администратор{% else %}модератор{% endif %})</p>
+{% if current_user.is_admin and poster.id != current_user.id %}
+<div class="pb-5 text-center indent">
+    <a href="/admin?search={{ poster.id }}#user-{{ poster.id }}" style="width: 80%;" class="btn btn-primary">Настроить права пользователя</a>
+</div>
+{% endif %}
+<div class="pt-3 text-center indent">
+    <a href="/update_product/{{ product.id }}" style="width: 80%;" class="btn btn-primary">Изменить товар</a>
+</div>
+<form class="pt-3 text-center indent" method="post">
+    <button type="submit" name="toggle_product" style="width: 80%;" class="btn btn-primary">{% if product.toggle %}Отключить{% else %}Включить{% endif %} товар</button>
+</form>
+<form class="pt-3 text-center indent" method="post">
+    <button type="submit" name="delete_product" style="width: 80%;" class="btn btn-danger">Удалить товар</button>
+</form>
+{% endif %}
+{% endblock %}

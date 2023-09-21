@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block main_content %}
+<div class="text-center pt-1 pb-5">
+    <a href="/manufacturers" style="width: 80%;" class="btn btn-primary py-2">Вернуться к производителям</a>
+</div>
+<div class="row indent w-100 ms-0 pb-2">
+    <div class="col pb-3" style="min-width: 18rem;">
+        <a href="/static/media/from_users/{{ manufacturer.logo }}"><img src="/static/media/from_users/{{ manufacturer.logo }}" style="object-fit: contain; background-color: #fff;" class="w-100 border border-round p-3" alt="{{ manufacturer.name }}"></a>
+    </div>
+    <div class="col text-theme-primary">
+        <h1 class="pb-3 text-end">{{ manufacturer.name }}</h1>
+        <p class="pb-3 border-bottom border-color-theme text-about">{{ manufacturer.about }}</p>
+    </div>
+</div>
+{% if manufacturer.toggle or current_user.is_admin or current_user.is_moderator %}
+{% if products_list %}
+<h3 class="text-theme-primary indent">Товары производителя:</h3>
+<div class="indent pb-3">
+    <div style="overflow: auto; display: flex; flex-direction: row;" class="border border-color-theme border-round">
+        {% for product in products_list %}
+        <div class="card {% if product.toggle %}card-theme{% else %}card-theme-danger{% endif %} text-theme-primary border-color-theme m-3 product-width">
+            <a href="/products/{{ product.id }}" class="border-bottom {% if product.toggle %}border-color-theme{% else %}border-color-theme-danger{% endif %}"><img src="/static/media/from_users/{{ product.image_preview }}" class="card-img-top" style="object-fit: cover; background: #fff;" alt="{{ product.name }}"></a>
+            <div class="card-body d-flex justify-content-between" style="flex-direction: column;">
+                <div class="pb-3">
+                    <h5 class="card-title text-center">{{ product.name }}</h5>
+                    <p class="card-text text-center">{{ product.price }}₽</p>
+                    {% if product.id|string in session["cart"] %}
+                        <p class="card-text text-center">В корзине: <b>{{ session["cart"][product.id|string] }} шт.</b></p>
+                    {% endif %}
+                </div>
+                <div>
+                    <div class="text-center py-1">
+                        <a href="/products/{{ product.id }}" class="btn btn-primary w-100">Подробнее</a>
+                    </div>
+                    {% if product.toggle %}
+                    <form method="post" class="text-center py-1">
+                        <div class="pb-2">
+                            <input type="number" name="count" class="form-control form-control-round border-color-theme input-color-theme font-auto" placeholder="Кол-во штук...">
+                        </div>
+                        <button type="submit" name="put_into_cart" value="{{ product.id }}" class="btn btn-primary btn-auto-size w-100">{% if product.id|string in session["cart"] %}Изменить кол-во{% else %}Добавить в корзину{% endif %}</button>
+                        {% if product.id|string in session["cart"] %}
+                        <div class="pt-2">
+                            <button type="submit" name="remove_from_cart" value="{{ product.id }}" class="btn btn-primary btn-auto-size w-100">Удалить из корзины</button>
+                        </div>
+                        {% endif %}
+                    </form>
+                    {% else %}
+                    <h5 class="card-title text-center pt-3">Товар отключен</h5>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% elif request.args.get("search") %}
+<h3 class="text-theme-primary text-center pb-3">Товары с этим названием не найдены</h3>
+{% else %}
+<h3 class="text-theme-primary text-center pb-3">У этого производителя нет товаров</h3>
+{% endif %}
+{% else %}
+<h3 class="text-theme-primary text-center pb-3">На данный момент производитель ничего не продаёт</h3>
+{% endif %}
+{% if current_user.is_admin or current_user.is_moderator %}
+<h1 class="text-theme-primary text-center indent pt-3">Инструменты модератора:</h1>
+<p class="py-2 text-theme-primary indent text-center">Производитель в последний раз редактировался пользователем {{ poster.name }} (ID - {{ poster.id }}, права - {% if poster.is_admin %}администратор{% else %}модератор{% endif %})</p>
+{% if current_user.is_admin and poster.id != current_user.id %}
+<div class="pb-5 text-center indent">
+    <a href="/admin?search={{ poster.id }}#user-{{ poster.id }}" style="width: 80%;" class="btn btn-primary">Настроить права пользователя</a>
+</div>
+{% endif %}
+<div class="pt-3 text-center indent">
+    <a href="/update_manufacturer/{{ manufacturer.id }}" style="width: 80%;" class="btn btn-primary">Изменить производителя</a>
+</div>
+<form class="py-3 text-center indent" method="post">
+    <button type="submit" name="toggle_manufacturer" style="width: 80%;" class="btn btn-primary">{% if manufacturer.toggle %}Выключить{% else %}Включить{% endif %} производителя и все его товары</button>
+</form>
+<form class="pb-3 text-center indent" method="post">
+    <button type="submit" name="delete_manufacturer" style="width: 80%;" class="btn btn-danger">Удалить производителя и все его товары</button>
+</form>
+{% endif %}
+{% endblock %}

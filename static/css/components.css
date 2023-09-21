@@ -1,0 +1,130 @@
+body {
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+main {
+    min-height: 100vh;
+    min-width: 50%;
+}
+
+.form-signin {
+    max-width: 330px;
+    padding: 1rem;
+}
+
+.form-signin .form-floating:focus-within {
+    z-index: 2;
+}
+
+.form-control {
+    border-radius: 0rem;
+}
+
+.form-control-round {
+    border-radius: .375rem;
+}
+
+.form-control-begin {
+    margin-bottom: -1px;
+    border-top-left-radius: .375rem;
+    border-top-right-radius: .375rem;
+}
+
+.form-control-end {
+    margin-bottom: 40px;
+    border-bottom-right-radius: .375rem;
+    border-bottom-left-radius: .375rem;
+}
+
+.alert {
+    border-left: 0px;
+    border-right: 0px;
+    border-top: 0px;
+    border-radius: 0rem;
+    margin-bottom: 0rem;
+}
+
+.border-round {
+    border-radius: .375rem;
+    margin-bottom: .375rem;
+}
+
+.card-img-top {
+    margin: 0 auto;
+    -webkit-transition: all 0.15s ease;
+    -moz-transition: all 0.15s ease;
+    -o-transition: all 0.15s ease;
+    transition: all 0.15s ease;
+}
+
+.card-img-top:hover {
+    filter: brightness(60%);
+}
+
+.carousel-control-prev {
+    border-bottom-left-radius: .375rem;
+    border-top-left-radius: .375rem;
+    opacity: .33;
+}
+
+.carousel-control-next {
+    border-bottom-right-radius: .375rem;
+    border-top-right-radius: .375rem;
+    opacity: .33;
+}
+
+.text-about {
+    white-space: pre-wrap;
+    text-align: justify;
+}
+
+@media (max-width: 500px) {
+    .indent {
+        padding-left: 0rem;
+        padding-right: 0rem;
+    }
+    .product-width {
+        min-width: 9rem!important;
+        max-width: 9rem!important;
+    }
+    .card-title {
+        font-size: 1rem;
+    }
+    .card-img-top {
+        height: 100px;
+    }
+    .btn-auto-size {
+        --bs-btn-padding-y: 0.25rem;
+        --bs-btn-padding-x: 0.5rem;
+        --bs-btn-font-size: 0.875rem;
+        --bs-btn-border-radius: 0.25rem;
+    }
+    .justify-content-footer {
+        justify-content: center!important;
+    }
+    .font-auto {
+        font-size: 0.875rem;
+    }
+}
+
+@media (min-width: 500px) {
+    .indent {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    .product-width {
+        min-width: 18rem!important;
+        max-width: 18rem!important;
+    }
+    .card-title {
+        font-size: 1.25rem;
+    }
+    .card-img-top {
+        height: 200px;
+    }
+    .justify-content-footer {
+        justify-content: flex-end!important;
+    }
+}

@@ -1,0 +1,38 @@
+body {
+    background-color: #eee;
+    background-image: url(/static/media/bg-light.jpg);
+}
+
+main {
+    background-color: #ffffff;
+}
+
+.text-theme-secondary {
+    color: #212529bf!important;
+}
+
+.border-color-theme {
+    border-color: #bbb!important;
+}
+
+.to-top {
+    background: url(/static/media/btn-top-light.png) no-repeat;
+}
+
+.card-theme {
+    background-color: #eee!important;
+}
+
+.card-theme-danger {
+    background-color: #f8d7da!important;
+    border-color: #e5b2b7!important;
+    color: #842029!important;
+}
+
+.border-color-theme-danger {
+    border-color: #e5b2b7!important;
+}
+
+.text-bg-light {
+    background-color: #eee!important;
+}
