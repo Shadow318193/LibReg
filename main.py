@@ -7,6 +7,7 @@ from data.users import User
 from data.products import Product
 from data.manufacturers import Manufacturer
 from data.orders import Order
+from data.books import Book
 
 from data.log import *
 
@@ -890,6 +891,7 @@ def product_info(product_id):
     manufacturer = db_sess.query(Manufacturer).filter(Manufacturer.id == product.manufacturer_id).first()
     product_images = product.images.split(",")
     product_tags = product.tags.split()
+    books = db_sess.query(Book).filter(product_id == Book.product_id).count()
     if request.method == "GET":
         update_user_status(f"Товар (ID - {product_id})")
         t = load_theme()
@@ -899,7 +901,7 @@ def product_info(product_id):
                                current_user=current_user, main_class="px-2", theme=t, YEAR=datetime.datetime.now().year,
                                page_name="product", COMPANY_NAME=COMPANY_NAME, product=product, poster=poster,
                                product_images=product_images, product_tags=product_tags, manufacturer=manufacturer,
-                               product_images_l=len(product_images))
+                               product_images_l=len(product_images), books=books)
     elif request.method == "POST":
         if "put_into_cart" in request.form:
             db_sess = db_session.create_session()
@@ -935,7 +937,7 @@ def product_info(product_id):
                     orders_list = list(db_sess.query(Order))
                     for order in orders_list:
                         if int(product_id) in bake_dict_from_db(order.products_list, func_for_key=int):
-                            flash("Этот продукт удалить нельзя, он уже был заказан когда либо", "danger")
+                            flash("Этот продукт удалить нельзя, он уже был когда-то заказан", "danger")
                             return redirect(f"/products/{product_id}")
                     for img in product_images:
                         img_path = os.path.join(app.config["UPLOAD_FOLDER"], img)
@@ -965,6 +967,33 @@ def product_info(product_id):
                             write_log(f"Товар {product.name} (ID - {product_id}) был включен")
                     else:
                         flash("Сначала надо включить производителя этого товара", "danger")
+            elif "change_product_count":
+                if current_user.is_admin or current_user.is_moderator:
+                    if product.toggle:
+                        if request.form.get("max_count").isdigit():
+                            if books == int(request.form.get("max_count")):
+                                flash("Вы не меняли кол-во товаров", "warning")
+                            elif books > int(request.form.get("max_count")):
+                                for book_i in range(books, int(request.form.get("max_count"))):
+                                    book = Book()
+                                    book.product_id = product_id
+                                    book.poster_id = current_user.id
+                                    db_sess.add(book)
+                            elif books < request.form.get("max_count") and int(request.form.get("max_count")) >= 0:
+                                for book_i in range(int(request.form.get("max_count")), books):
+                                    book = db_sess.query(Book).filter(product_id == Book.product_id,
+                                                                      Book.owner == None,
+                                                                      Book.toggle == 1).first()
+                                    if book:
+                                        db_sess.delete(book)
+                                    else:
+                                        flash("Невозможно удалить какую-то часть этих книг: "
+                                              "они уже были заказаны", "danger")
+                                        break
+                        else:
+                            flash("В поле максимального кол-ва книг нужно ввести число", "danger")
+                    else:
+                        flash("Сначала надо включить этот товар", "danger")
         return redirect(f"/products/{product_id}")
 
 

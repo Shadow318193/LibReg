@@ -26,6 +26,7 @@ class User(SqlAlchemyBase, UserMixin):
 
     product = orm.relation("Product", back_populates="user")
     order = orm.relation("Order", back_populates="user")
+    book = orm.relation("Book", back_populates="user")
 
     def __repr__(self):
         return f"Пользователь '{self.name}' (ID - {self.id})"

@@ -22,6 +22,7 @@ class Product(SqlAlchemyBase):
 
     user = orm.relation("User")
     manufacturer = orm.relation("Manufacturer")
+    book = orm.relation("Book", back_populates="product")
 
     def __repr__(self):
-        return f"Товар '{self.name}' (ID - {self.id})"
+        return f"Книга '{self.name}' (ID - {self.id})"

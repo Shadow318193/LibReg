@@ -1,1 +1,1 @@
-from . import users, products, manufacturers, orders
+from . import users, products, manufacturers, orders, books
