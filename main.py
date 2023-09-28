@@ -907,19 +907,21 @@ def product_info(product_id):
             db_sess = db_session.create_session()
             if db_sess.query(Product).filter(Product.id == product_id).first():
                 count = int(request.form.get("count")) if request.form.get("count").isdigit() else 1
-                if count:
+                if 0 < count <= db_sess.query(Book).filter(Book.product_id == product_id, Book.owner == None).count():
                     if str(product_id) in session["cart"]:
                         flash("Кол-во товара в корзине изменено", "success")
                     else:
                         flash("Товар добавлен в корзину", "success")
                     session["cart"][str(product_id)] = count
-                else:
+                elif not count:
                     if str(product_id) in session["cart"]:
                         session["cart"].pop(str(product_id))
                         write_log(f'Товар с ID {product_id} убран из корзины')
                         flash("Товар убран из корзины", "success")
                     else:
                         flash("Товара не было в корзине", "danger")
+                else:
+                    flash("Ваш спрос превысил количество этого товара", "danger")
         elif "remove_from_cart" in request.form:
             if str(product_id) in session["cart"]:
                 db_sess = db_session.create_session()
@@ -967,29 +969,32 @@ def product_info(product_id):
                             write_log(f"Товар {product.name} (ID - {product_id}) был включен")
                     else:
                         flash("Сначала надо включить производителя этого товара", "danger")
-            elif "change_product_count":
+            elif "change_product_count" in request.form:
                 if current_user.is_admin or current_user.is_moderator:
                     if product.toggle:
                         if request.form.get("max_count").isdigit():
+                            print(books, int(request.form.get("max_count")))
                             if books == int(request.form.get("max_count")):
                                 flash("Вы не меняли кол-во товаров", "warning")
-                            elif books > int(request.form.get("max_count")):
+                            elif books < int(request.form.get("max_count")) and \
+                                    int(request.form.get("max_count")) >= 0:
                                 for book_i in range(books, int(request.form.get("max_count"))):
                                     book = Book()
                                     book.product_id = product_id
                                     book.poster_id = current_user.id
+                                    book.status = 0
                                     db_sess.add(book)
-                            elif books < request.form.get("max_count") and int(request.form.get("max_count")) >= 0:
+                                db_sess.commit()
+                            elif books > int(request.form.get("max_count")) >= 0:
                                 for book_i in range(int(request.form.get("max_count")), books):
                                     book = db_sess.query(Book).filter(product_id == Book.product_id,
-                                                                      Book.owner == None,
-                                                                      Book.toggle == 1).first()
+                                                                      Book.owner == None).first()
                                     if book:
                                         db_sess.delete(book)
                                     else:
                                         flash("Невозможно удалить какую-то часть этих книг: "
                                               "они уже были заказаны", "danger")
-                                        break
+                                db_sess.commit()
                         else:
                             flash("В поле максимального кол-ва книг нужно ввести число", "danger")
                     else:
