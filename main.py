@@ -892,6 +892,7 @@ def product_info(product_id):
     product_images = product.images.split(",")
     product_tags = product.tags.split()
     books = db_sess.query(Book).filter(product_id == Book.product_id).count()
+    max_book_count = db_sess.query(Book).filter(Book.product_id == product_id, Book.owner == None, Book.toggle).count()
     if request.method == "GET":
         update_user_status(f"Товар (ID - {product_id})")
         t = load_theme()
@@ -901,13 +902,14 @@ def product_info(product_id):
                                current_user=current_user, main_class="px-2", theme=t, YEAR=datetime.datetime.now().year,
                                page_name="product", COMPANY_NAME=COMPANY_NAME, product=product, poster=poster,
                                product_images=product_images, product_tags=product_tags, manufacturer=manufacturer,
-                               product_images_l=len(product_images), books=books)
+                               product_images_l=len(product_images), books=books, max_book_count=max_book_count)
     elif request.method == "POST":
         if "put_into_cart" in request.form:
             db_sess = db_session.create_session()
             if db_sess.query(Product).filter(Product.id == product_id).first():
                 count = int(request.form.get("count")) if request.form.get("count").isdigit() else 1
-                if 0 < count <= db_sess.query(Book).filter(Book.product_id == product_id, Book.owner == None).count():
+
+                if 0 < count <= max_book_count:
                     if str(product_id) in session["cart"]:
                         flash("Кол-во товара в корзине изменено", "success")
                     else:
@@ -921,7 +923,9 @@ def product_info(product_id):
                     else:
                         flash("Товара не было в корзине", "danger")
                 else:
-                    flash("Ваш спрос превысил количество этого товара", "danger")
+                    session["cart"][str(product_id)] = max_book_count
+                    flash("Ваш спрос превысил количество этого товара, поэтому в корзину помещено "
+                          "максимально допустимое кол-во товаров", "warning")
         elif "remove_from_cart" in request.form:
             if str(product_id) in session["cart"]:
                 db_sess = db_session.create_session()
