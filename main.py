@@ -1470,8 +1470,16 @@ def cart():
                     order.products_list = bake_dict_for_db(session.get("cart"))
                     order.price = cost
                     products_price = {}
+                    books = []
                     for product in products_list:
                         products_price[product.id] = product.price
+                        for c in range(session.get("cart")[str(product.id)]):
+                            book = db_sess.query(Book).filter(product.id == Book.product_id, Book.owner == None,
+                                                              Book.toggle).first()
+                            book.status = 1
+                            book.owner = current_user.id
+                            books.append(str(book.id))
+                    order.books = ";".join(books)
                     order.products_price = bake_dict_for_db(products_price)
                     db_sess.add(order)
                     db_sess.commit()
