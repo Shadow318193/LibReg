@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block main_content %}
+<form method="post" class="text-center pt-1 pb-4">
+    <button type="submit" name="clear_cart" style="width: 80%;" class="btn btn-primary py-2">Очистить корзину</button>
+</form>
+<h3 class="text-theme-primary indent border-bottom border-color-theme mb-3">Корзина:</h3>
+{% if products_list %}
+<div class="row indent w-100 ms-0 pb-5">
+    {% for product in products_list %}
+    <div class="col d-flex justify-content-center px-0">
+        <div class="card card-theme text-theme-primary border-color-theme m-3 product-width">
+            <a href="/products/{{ product.id }}" class="border-bottom border-color-theme"><img src="/static/media/from_users/{{ product.image_preview }}" style="background-color: #fff; object-fit: cover;" class="card-img-top" alt="{{ product.name }}"></a>
+            <div class="card-body d-flex justify-content-between" style="flex-direction: column;">
+                <div class="pb-3">
+                    <h5 class="card-title text-center">{{ product.name }}</h5>
+                    <p class="card-text text-center">Кол-во: <b>{{ session["cart"][product.id|string] }}</b></p>
+                </div>
+                <div>
+                    <div class="text-center py-2">
+                        <a href="/products/{{ product.id }}" class="btn btn-primary btn-auto-size w-100">Подробнее</a>
+                    </div>
+                    <form method="post">
+                        <div class="d-flex justify-content-center">
+                            <input type="number" name="count" class="form-control form-control-round border-color-theme input-color-theme w-100 font-auto" placeholder="Кол-во штук...">
+                        </div>
+                        <div class="text-center py-2">
+                            <button type="submit" name="change_count" value="{{ product.id }}" class="btn btn-primary btn-auto-size w-100">Изменить кол-во</button>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" name="remove_from_cart" value="{{ product.id }}" class="btn btn-primary btn-auto-size w-100">Удалить из корзины</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% if current_user.is_authenticated %}
+<h3 class="text-theme-primary indent border-bottom border-color-theme mb-3">Оформление заказа:</h3>
+<form method="post" class="text-center pt-3 pb-5" style="margin: 0 10%;">
+    <div class="form-floating d-flex justify-content-center">
+        <input type="text" class="form-control form-control-begin" id="floatingName" name="name" placeholder="Название" value="{{ current_user.name }}">
+        <label for="floatingName">Имя</label>
+    </div>
+    <div class="form-floating d-flex justify-content-center">
+        <input type="text" class="form-control" id="floatingAddress" name="address" placeholder="Адрес" value="{% if current_user.address %}{{ current_user.address }}{% endif %}">
+        <label for="floatingName">Адрес</label>
+    </div>
+    <div class="form-floating d-flex justify-content-center">
+        <input type="text" class="form-control form-control-end" id="floatingCommentary" name="commentary" placeholder="Комментарий к заказу" value="{% if session.get('commentary') %}{{ session.get('commentary') }}{% endif %}">
+        <label for="floatingName">Комментарий к заказу</label>
+    </div>
+    <button type="submit" name="make_order" class="btn btn-primary w-100 py-2">Оформить</button>
+</form>
+{% else %}
+<h3 class="text-theme-primary text-center">Войдите или зарегистрируйтесь, чтобы оформить заказ. Корзина не очистится</h3>
+{% endif %}
+{% elif request.args.get("search") %}
+<h3 class="text-theme-primary text-center">Книги c таким названием не найдены</h3>
+{% else %}
+<h3 class="text-theme-primary text-center">Книг в корзине на данный момент нет</h3>
+{% endif %}
+{% endblock %}

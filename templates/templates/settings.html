@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block main_content %}
+<form method="post">
+    <a class="text-theme-primary" href="/"><img class="mb-4" src="/static/media/logo.png" alt="{{ COMPANY_NAME }}" height="57"></a>
+    <h1 class="h3 mb-5 fw-normal text-theme-primary">Настройки</h1>
+
+    <div class="form-floating">
+        <input type="text" class="form-control form-control-begin" id="floatingName" name="name" placeholder="Имя" value="{% if session.get('new_name') %}{{ session.get('new_name') }}{% else %}{{ current_user.name }}{% endif %}">
+        <label for="floatingName">Новое имя</label>
+    </div>
+    <div class="form-floating">
+        <input type="number" class="form-control" id="floatingPhone" name="phone" placeholder="8xxxxxxxxxx" value="{% if session.get('new_phone') %}{{ session.get('new_phone') }}{% else %}{{ current_user.phone }}{% endif %}">
+        <label for="floatingPhone">Телефон региона РФ</label>
+    </div>
+    <div class="form-floating">
+        <input type="email" class="form-control" id="floatingEmail" name="email" placeholder="name@example.com" value="{% if session.get('new_email') %}{{ session.get('new_email') }}{% elif current_user.email %}{{ current_user.email }}{% endif %}">
+        <label for="floatingEmail">Почта</label>
+    </div>
+    <div class="form-floating">
+        <input type="text" class="form-control" id="floatingAddress" name="address" placeholder="Москва, Красная Площадь, Кремль" value="{% if session.get('new_address') %}{{ session.get('new_address') }}{% elif current_user.address %}{{ current_user.address }}{% endif %}">
+        <label for="floatingAddress">Адрес</label>
+    </div>
+    <div class="form-floating">
+        <input type="password" class="form-control" id="floatingOldPassword" name="old_password" placeholder="Старый пароль">
+        <label for="floatingOldPassword">Старый пароль (обязательно)</label>
+    </div>
+    <div class="form-floating">
+        <input type="password" class="form-control" id="floatingPassword" name="new_password" placeholder="Новый пароль">
+        <label for="floatingPassword">Новый пароль</label>
+    </div>
+    <div class="form-floating">
+        <input type="password" class="form-control form-control-end" id="floatingPasswordConfirm" name="password_confirm" placeholder="Подтверждение пароля">
+        <label for="floatingPasswordConfirm">Подтверждение пароля</label>
+    </div>
+    <div class="pt-2 pb-5">
+        <button class="btn btn-primary w-100 py-3" type="submit">Обновить</button>
+    </div>
+    <div class="py-2">
+        <a href="/" class="btn btn-primary w-100 py-2">Главная страница</a>
+    </div>
+    <div class="py-2">
+        <a href="/home" class="btn btn-primary w-100 py-2">Личный кабинет</a>
+    </div>
+
+    <p class="mt-5 mb-3 text-theme-primary">© {{ YEAR }} {{ COMPANY_NAME }}</p>
+</form>
+{% endblock %}

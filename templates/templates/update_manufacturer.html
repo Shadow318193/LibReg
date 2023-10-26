@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block main_content %}
+<form method="post" xmlns="http://www.w3.org/1999/html" enctype="multipart/form-data">
+    <a class="text-theme-primary" href="/"><img class="mb-4" src="/static/media/logo.png" alt="{{ COMPANY_NAME }}" height="57"></a>
+    <h1 class="h3 mb-5 fw-normal text-theme-primary">Изменение автора</h1>
+
+    <div class="form-floating">
+        <input type="text" class="form-control form-control-begin" id="floatingName" name="name" placeholder="Название" value="{% if session.get('manufacturer_name') %}{{ session.get('manufacturer_name') }}{% else %}{{ manufacturer.name }}{% endif %}">
+        <label for="floatingName">Новое имя (псевдоним)</label>
+    </div>
+    <div class="form-floating">
+        <textarea rows="3" class="form-control" id="floatingAbout" name="about" placeholder="Описание">{% if session.get('manufacturer_about') %}{{ session.get('manufacturer_about') }}{% else %}{{ manufacturer.about }}{% endif %}</textarea>
+        <label for="floatingAbout">Новое описание</label>
+    </div>
+    <div class="form-floating" style="height: 76px;">
+        <input type="file" accept="{{ accept_images }}" class="form-control form-control-end h-100 pt-5" id="floatingFile" name="file" placeholder="Логотип">
+        <label for="floatingFile">Новый фото/логотип</label>
+    </div>
+
+    <div class="pt-4 pb-5">
+        <button class="btn btn-primary w-100 py-3" type="submit">Изменить</button>
+    </div>
+    {% if current_user.is_admin %}
+    <div class="py-2">
+        <a href="/admin" class="btn btn-primary w-100 py-2">Меню администратора</a>
+    </div>
+    {% endif %}
+    <div class="py-2">
+        <a href="/" class="btn btn-primary w-100 py-2">Главная страница</a>
+    </div>
+    <div class="py-2">
+        <a href="/manufacturers" class="btn btn-primary w-100 py-2">Авторы</a>
+    </div>
+
+    <p class="mt-5 mb-3 text-theme-primary">© {{ YEAR }} {{ COMPANY_NAME }}</p>
+</form>
+{% endblock %}

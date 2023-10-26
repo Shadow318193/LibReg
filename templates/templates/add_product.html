@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block main_content %}
+<form method="post" xmlns="http://www.w3.org/1999/html" enctype="multipart/form-data">
+    <a class="text-theme-primary" href="/"><img class="mb-4" src="/static/media/logo.png" alt="{{ COMPANY_NAME }}" height="57"></a>
+    <h1 class="h3 mb-5 fw-normal text-theme-primary">Добавление книги</h1>
+
+    <div class="form-floating">
+        <input type="text" class="form-control form-control-begin" id="floatingName" name="name" placeholder="Название" value="{% if session.get('product_name') %}{{ session.get('product_name') }}{% endif %}">
+        <label for="floatingName">Название</label>
+    </div>
+    <div class="form-floating">
+        <textarea rows="3" class="form-control" id="floatingAbout" name="about" placeholder="Описание">{% if session.get('about') %}{{ session.get('about') }}{% endif %}</textarea>
+        <label for="floatingAbout">Описание</label>
+    </div>
+    <div class="form-floating">
+        <input type="number" class="form-control" id="floatingManufacturer" name="manufacturer" placeholder="ID производителя" value="{% if session.get('manufacturer') %}{{ session.get('manufacturer') }}{% endif %}">
+        <label for="floatingManufacturer">ID автора</label>
+    </div>
+    <div class="form-floating">
+        <textarea rows="2" class="form-control" id="floatingTags" name="tags" placeholder="Тэги">{% if session.get('tags') %}{{ session.get('tags') }}{% endif %}</textarea>
+        <label for="floatingTags">Тэги</label>
+    </div>
+    <div class="form-floating" style="height: 76px;">
+        <input type="file" accept="{{ accept_images }}" multiple="multiple" class="form-control form-control-end h-100 pt-5" id="floatingFile" name="files[]" placeholder="Файл">
+        <label for="floatingFile">Файлы</label>
+    </div>
+
+    <div class="pt-4 pb-5">
+        <button class="btn btn-primary w-100 py-3" type="submit">Добавить</button>
+    </div>
+    {% if current_user.is_admin %}
+    <div class="py-2">
+        <a href="/admin" class="btn btn-primary w-100 py-2">Меню администратора</a>
+    </div>
+    {% endif %}
+    <div class="py-2">
+        <a href="/" class="btn btn-primary w-100 py-2">Главная страница</a>
+    </div>
+    <div class="py-2">
+        <a href="/products" class="btn btn-primary w-100 py-2">Книги</a>
+    </div>
+
+    <h1 class="h3 mt-5 mb-4 fw-normal text-theme-primary">Список ID авторов:</h1>
+    <div class="list-group" style="max-height: 80vh; overflow: auto;">
+        {% for manufacturer in manufacturers_list %}
+        <a href="/manufacturers/{{ manufacturer.id }}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+            <img src="/static/media/from_users/{{ manufacturer.logo }}" alt="twbs" width="64" height="32" style="object-fit: contain;" class="border border-round flex-shrink-0">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+                <div>
+                    <h6 class="mb-0">{{ manufacturer.name }}</h6>
+                    <p class="mb-0 opacity-75">{{ manufacturer.about }}</p>
+                </div>
+                <small class="opacity-50 text-nowrap">ID - {{ manufacturer.id }}</small>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    <p class="mt-5 mb-3 text-theme-primary">© {{ YEAR }} {{ COMPANY_NAME }}</p>
+</form>
+{% endblock %}

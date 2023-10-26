@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block main_content %}
+<form method="post">
+    <a class="text-theme-primary" href="/"><img class="mb-4" src="/static/media/logo.png" alt="{{ COMPANY_NAME }}" height="57"></a>
+    <h1 class="h3 mb-5 fw-normal text-theme-primary">Вход</h1>
+
+    <div class="form-floating">
+        <input type="text" class="form-control form-control-begin" id="floatingLogin" name="login" placeholder="name@example.com или 8xxxxxxxxxx" value="{% if session.get('login') %}{{ session.get('login')}}{% endif %}">
+        <label for="floatingLogin">Электронная почта или телефон</label>
+    </div>
+    <div class="form-floating">
+        <input type="password" class="form-control form-control-end" id="floatingPassword" name="password" placeholder="Пароль">
+        <label for="floatingPassword">Пароль</label>
+    </div>
+
+    <div class="pt-2 pb-5">
+        <button class="btn btn-primary w-100 py-3" type="submit">Войти</button>
+    </div>
+    <div class="py-2">
+        <a href="/" class="btn btn-primary w-100 py-2">Главная страница</a>
+    </div>
+    <div class="py-2">
+        <a href="/signup" class="btn btn-primary w-100 py-2">У меня нет аккаунта</a>
+    </div>
+
+    <p class="mt-5 mb-3 text-theme-primary">© {{ YEAR }} {{ COMPANY_NAME }}</p>
+</form>
+{% endblock %}

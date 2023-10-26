@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block main_content %}
+<h1 class="text-theme-primary indent border-bottom border-color-theme mb-5 pb-2">О компании:</h1>
+<div class="text-center pb-5">
+    <img src="/static/media/logo_full.png" class="w-25" style="min-width: 200px;">
+</div>
+<p class="indent text-theme-primary text-about">{{ COMPANY_ABOUT }}</p>
+<div class="text-center pt-2">
+    <a href="/" class="btn btn-primary py-4" style="width: 80%;">Главная страница</a>
+</div>
+{% endblock %}

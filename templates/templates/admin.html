@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block main_content %}
+<h1 class="text-center text-theme-primary pb-2">Восстановление данных:</h1>
+<form class="text-center py-1" method="post">
+    <button style="width: 80%;" class="btn btn-primary" name="make_backup" type="submit">Сделать резервную копию БД и файлов</button>
+</form>
+<form class="text-center py-1" method="post">
+    <button style="width: 80%;" class="btn btn-primary" name="restore_from_backup" type="submit">Восстановить БД и файлы</button>
+</form>
+<h1 class="text-center text-theme-primary pt-4 mt-4 pb-2 border-top border-color-theme">Логи:</h1>
+<div class="text-center py-1">
+    <a href="/admin/log" style="width: 80%;" class="btn btn-primary py-2">Прочитать логи</a>
+</div>
+<form class="text-center py-1" method="post">
+    <button style="width: 80%;" class="btn btn-primary" name="log" type="submit">Поместить текущие логи в архив и создать новые</button>
+</form>
+<h1 class="text-center text-theme-primary pt-4 mt-4 pb-2 border-top border-color-theme">Браузер:</h1>
+<form method="post" class="text-center py-1">
+    <button type="submit" name="clear_session" style="width: 80%;" class="btn btn-primary py-2">Очистить session (внимание: будет произведён выход из аккаунта)</button>
+</form>
+<h1 class="text-center text-theme-primary pt-4 mt-4 pb-2 border-top border-color-theme">Товары:</h1>
+<div class="text-center py-1">
+    <a href="/add_product" style="width: 80%;" class="btn btn-primary py-2">Добавить товар</a>
+</div>
+<h1 class="text-center text-theme-primary pt-4 mt-4 pb-2 border-top border-color-theme">Производители:</h1>
+<div class="text-center py-1">
+    <a href="/add_manufacturer" style="width: 80%;" class="btn btn-primary py-2">Добавить производителя</a>
+</div>
+<h1 class="text-center text-theme-primary pt-4 mt-4 pb-2 border-top border-color-theme">Корзина:</h1>
+<form method="post" class="text-center py-1">
+    <button type="submit" name="clear_cart" style="width: 80%;" class="btn btn-primary py-2">Очистить корзину</button>
+</form>
+<h1 class="text-center text-theme-primary pt-4 mt-4 pb-2 border-top border-color-theme">Рекомендации:</h1>
+<form method="post" class="text-center py-1">
+    <button type="submit" name="clear_rec" style="width: 80%;" class="btn btn-primary py-2">Очистить рекомендации</button>
+</form>
+<h1 class="text-center text-theme-primary pt-4 mt-4 pb-2 border-top border-color-theme">Модераторы:</h1>
+{% if users %}
+<div class="row indent w-100 ms-0">
+    {% for user in users %}
+    <div class="col d-flex justify-content-center px-0">
+        <div class="card card-theme text-theme-primary border-color-theme m-3 product-width" id="user-{{ user.id }}">
+            <div class="card-body d-flex justify-content-between" style="flex-direction: column;">
+                <div class="pb-3">
+                    <h5 class="card-title text-center">{{ user.name }} (ID - {{ user.id }})</h5>
+                    <p class="card-text text-center">{% if user.is_moderator %}Модератор{% else %}Клиент{% endif %}</p>
+                </div>
+                <form class="text-center py-1" method="post">
+                    {% if user.is_moderator %}
+                    <button type="submit" name="unmake_moderator" value="{{ user.id }}" class="btn btn-primary btn-auto-size">Отобрать права модератора</button>
+                    {% else %}
+                    <button type="submit" name="make_moderator" value="{{ user.id }}" class="btn btn-primary btn-auto-size">Дать права модератора</button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% elif request.args.get("search") %}
+<h3 class="text-center text-theme-primary pb-2">Нет пользователей с такими данными</h3>
+{% else %}
+<h3 class="text-center text-theme-primary pb-2">Нет пользователей</h3>
+{% endif %}
+{% endblock %}

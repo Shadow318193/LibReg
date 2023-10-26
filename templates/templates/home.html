@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block main_content %}
+<h1 class="text-center text-theme-primary py-2 mb-3">Данные об аккаунте:</h1>
+<div class="indent text-theme-primary pb-3">
+    <h3>Имя: {{ current_user.name }}</h3>
+    <h3>E-mail: {% if current_user.email %}{{ current_user.email }}{% else %}не указан{% endif %}</h3>
+    <h3>Номер телефона: {{ current_user.phone }}</h3>
+    <h3>Адрес: {% if current_user.address %}{{ current_user.address }}{% else %}не указан{% endif %}</h3>
+    <h3>Роль: {% if current_user.is_admin %}администратор{% elif current_user.is_moderator %}модератор{% else %}клиент{% endif %}</h3>
+</div>
+<div class="text-center py-3 border-bottom border-color-theme">
+    <a href="/settings" style="width: 80%;" class="btn btn-primary py-2">Поменять данные</a>
+</div>
+<form method="post" class="text-center py-1 mt-3">
+    <button type="submit" name="clear_cart" style="width: 80%;" class="btn btn-primary py-2">Очистить корзину</button>
+</form>
+<form method="post" class="text-center py-1">
+    <button type="submit" name="clear_rec" style="width: 80%;" class="btn btn-primary py-2">Очистить рекомендации</button>
+</form>
+
+{% endblock %}
