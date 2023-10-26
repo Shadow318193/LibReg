@@ -3,13 +3,13 @@
 {% if current_user.is_admin or current_user.is_moderator %}
 <h1 class="text-theme-primary text-center indent">Инструменты модератора:</h1>
 <div class="text-center border-color-theme border-bottom pt-3 pb-4 mb-4">
-    <a href="/add_product" style="width: 80%;" class="btn btn-primary py-2">Добавить товар</a>
+    <a href="/add_product" style="width: 80%;" class="btn btn-primary py-2">Добавить книгу</a>
 </div>
 {% endif %}
 <form method="post" class="text-center pt-1 pb-4">
     <button type="submit" name="clear_rec" style="width: 80%;" class="btn btn-primary py-2">Очистить рекомендации</button>
 </form>
-<h3 class="text-theme-primary indent border-bottom border-color-theme mb-3">Все товары:</h3>
+<h3 class="text-theme-primary indent border-bottom border-color-theme mb-3">Все книги:</h3>
 {% if products_list %}
 <div class="row indent w-100 ms-0">
     {% for product in products_list %}
@@ -19,7 +19,6 @@
             <div class="card-body d-flex justify-content-between" style="flex-direction: column;">
                 <div class="pb-3">
                     <h5 class="card-title text-center">{{ product.name }}</h5>
-                    <p class="card-text text-center">{{ product.price }}₽</p>
                     {% if product.id|string in session["cart"] %}
                         <p class="card-text text-center">В корзине: <b>{{ session["cart"][product.id|string] }} шт.</b></p>
                     {% endif %}
@@ -41,7 +40,7 @@
                         {% endif %}
                     </form>
                     {% else %}
-                    <h5 class="card-title text-center pt-3">Товар отключен</h5>
+                    <h5 class="card-title text-center pt-3">Книга отключена</h5>
                     {% endif %}
                 </div>
             </div>
@@ -50,9 +49,9 @@
     {% endfor %}
 </div>
 {% elif request.args.get("search") %}
-<h3 class="text-theme-primary text-center">Товары c таким названием не найдены</h3>
+<h3 class="text-theme-primary text-center">Книги c таким названием не найдены</h3>
 {% else %}
-<h3 class="text-theme-primary text-center">Товары на данный момент отсутствуют</h3>
+<h3 class="text-theme-primary text-center">Книги на данный момент отсутствуют</h3>
 {% endif %}
 <div class="text-center border-color-theme border-top pt-4 mt-3">
     <a href="/cart" style="width: 80%;" class="btn btn-primary py-4">Отправиться в корзину</a>

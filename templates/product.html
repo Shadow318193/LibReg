@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block main_content %}
 <div class="text-center border-bottom border-color-theme pt-1 pb-3 mb-3">
-    <a href="/products" style="width: 80%;" class="btn btn-primary py-2">Вернуться к товарам</a>
+    <a href="/products" style="width: 80%;" class="btn btn-primary py-2">Вернуться к книгам</a>
 </div>
 <div class="row indent w-100 ms-0 pb-4">
     <div class="col">
@@ -34,9 +34,8 @@
     </div>
     <div class="col text-theme-primary">
         <h1 class="pb-3 pt-2 text-end">{{ product.name }}</h1>
-        <h2 class="pb-3 text-end">{{ product.price }}₽</h2>
         <p class="pb-3 border-bottom border-color-theme text-about">{{ product.about }}</p>
-        <h3 class="pb-3 border-color-theme">Производитель: <a class="nav-link" href="/manufacturers/{{ manufacturer.id }}">{{ manufacturer.name }}</a></h3>
+        <h3 class="pb-3 border-color-theme">Автор: <a class="nav-link" href="/manufacturers/{{ manufacturer.id }}">{{ manufacturer.name }}</a></h3>
         <div class="border-bottom border-color-theme pb-3"><a href="/manufacturers/{{ manufacturer.id }}"><img src="/static/media/from_users/{{ manufacturer.logo }}" style="object-fit: contain; background-color: #fff;" class="w-100 h-100 border border-round p-3" alt="{{ manufacturer.name }}"></a></div>
         <h3 class="pt-3">Тэги:</h3>
         <ul class="pb-3 border-bottom border-color-theme">
@@ -61,7 +60,7 @@
             {% endif %}
         </form>
         {% else %}
-        <h1 class="text-center pt-3">На данный момент товар заказать нельзя</h1>
+        <h1 class="text-center pt-3">На данный момент книгу заказать нельзя</h1>
         {% endif %}
     </div>
 </div>
@@ -70,14 +69,14 @@
 </div>
 {% if current_user.is_admin or current_user.is_moderator %}
 <h1 class="text-theme-primary text-center indent border-color-theme border-top pt-4">Инструменты модератора:</h1>
-<p class="py-2 text-theme-primary text-center indent">Товар в последний раз редактировался пользователем {{ poster.name }} (ID - {{ poster.id }}, права - {% if poster.is_admin %}администратор{% else %}модератор{% endif %})</p>
+<p class="py-2 text-theme-primary text-center indent">Книга в последний раз редактировалась пользователем {{ poster.name }} (ID - {{ poster.id }}, права - {% if poster.is_admin %}администратор{% else %}модератор{% endif %})</p>
 {% if current_user.is_admin and poster.id != current_user.id %}
 <div class="pb-5 text-center indent">
     <a href="/admin?search={{ poster.id }}#user-{{ poster.id }}" style="width: 80%;" class="btn btn-primary">Настроить права пользователя</a>
 </div>
 {% endif %}
 <div class="pt-3 text-center indent">
-    <a href="/update_product/{{ product.id }}" style="width: 80%;" class="btn btn-primary">Изменить товар</a>
+    <a href="/update_product/{{ product.id }}" style="width: 80%;" class="btn btn-primary">Изменить книгу</a>
 </div>
 <form class="pt-3 text-center indent" method="post">
     <button type="submit" name="toggle_product" style="width: 80%;" class="btn btn-primary">{% if product.toggle %}Отключить{% else %}Включить{% endif %} товар</button>
@@ -89,7 +88,7 @@
     <button type="submit" name="change_product_count" style="width: 80%;" class="btn btn-primary">Изменить</button>
 </form>
 <form class="pt-5 mt-5 text-center indent border-top border-color-theme" method="post">
-    <button type="submit" name="delete_product" style="width: 80%;" class="btn btn-danger">Удалить товар</button>
+    <button type="submit" name="delete_product" style="width: 80%;" class="btn btn-danger">Удалить книгу</button>
 </form>
 {% endif %}
 {% endblock %}

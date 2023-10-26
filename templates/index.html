@@ -3,7 +3,7 @@
 <form method="post" class="text-center pt-1 pb-5">
     <button type="submit" name="clear_rec" style="width: 80%;" class="btn btn-primary py-2">Очистить рекомендации</button>
 </form>
-<h3 class="text-theme-primary indent">Возможно, вам понравятся эти товары:</h3>
+<h3 class="text-theme-primary indent">Возможно, вам понравятся эти книги:</h3>
 <div class="indent">
     <div style="overflow: auto; display: flex; flex-direction: row;" class="border border-color-theme border-round">
         {% for product in products_list %}
@@ -12,7 +12,6 @@
             <div class="card-body d-flex justify-content-between" style="flex-direction: column;">
                 <div class="pb-3">
                     <h5 class="card-title text-center">{{ product.name }}</h5>
-                    <p class="card-text text-center">{{ product.price }}₽</p>
                     {% if product.id|string in session["cart"] %}
                     <p class="card-text text-center">В корзине: <b>{{ session["cart"][product.id|string] }}</b></p>
                     {% endif %}
@@ -34,7 +33,7 @@
                         {% endif %}
                     </form>
                     {% else %}
-                    <h5 class="card-title text-center pt-3">Товар отключен</h5>
+                    <h5 class="card-title text-center pt-3">Книга отключена</h5>
                     {% endif %}
                 </div>
             </div>

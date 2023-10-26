@@ -12,9 +12,7 @@
             <div class="card-body d-flex justify-content-between" style="flex-direction: column;">
                 <div class="pb-3">
                     <h5 class="card-title text-center mb-3">{{ product.name }}</h5>
-                    <p class="card-text text-center">Цена: <b>{{ products_price[product.id] }}₽</b> на момент покупки</p>
                     <p class="card-text text-center">Кол-во: <b>{{ products_in_order[product.id] }} шт.</b></p>
-                    <p class="card-text text-center">Стоимость: <b>{{ products_price[product.id] * products_in_order[product.id] }}₽</b></p>
                 </div>
                 <div class="text-center py-1">
                     <a href="/products/{{ product.id }}" class="btn btn-primary btn-auto-size">Подробнее</a>
@@ -24,7 +22,6 @@
     </div>
     {% endfor %}
 </div>
-<h1 class="text-theme-primary indent border-top border-color-theme mt-3 pt-3 pb-3">Итоговая стоимость: {{ order.price }}₽</h1>
 <h3 class="text-theme-primary indent pb-1">Имя заказчика: {{ order.poster_name }}</h3>
 <h3 class="text-theme-primary indent pb-3">Адрес: {{ order.address }}</h3>
 <h1 class="text-theme-primary indent">Статус: {{ ORDER_STATUS[order.status] }}</h1>
