@@ -77,6 +77,8 @@ def cart_check():
             products_toggle_list[product.id] = product.toggle
         remove_flag = False
         for product_id in session["cart"].copy():
+            max_book_count = db_sess.query(Book).filter(Book.product_id == product_id,
+                                                        Book.status == 0, Book.toggle).count()
             if int(product_id) not in products_toggle_list:
                 session['cart'].pop(product_id)
                 write_log(f"Книги с ID {product_id} не существует")
@@ -84,6 +86,10 @@ def cart_check():
             elif not products_toggle_list[int(product_id)]:
                 session['cart'].pop(product_id)
                 write_log(f"Книга с ID {product_id} больше не продаётся")
+                remove_flag = True
+            elif max_book_count < session["cart"][product_id]:
+                session['cart'].pop(product_id)
+                write_log(f"Слишком высокий спрос на книгу с ID {product_id}")
                 remove_flag = True
         if remove_flag:
             flash("Некоторые книги были удалены из корзины по причине их несуществования или снятия с продажи",
@@ -883,9 +889,9 @@ def product_info(product_id):
     product_images = product.images.split(",")
     product_tags = product.tags.split()
     books = db_sess.query(Book).filter(product_id == Book.product_id).count()
-    max_book_count = db_sess.query(Book).filter(Book.product_id == product_id, Book.owner == None, Book.toggle).count()
+    max_book_count = db_sess.query(Book).filter(Book.product_id == product_id, Book.status == 0, Book.toggle).count()
     if request.method == "GET":
-        update_user_status(f"Товар (ID - {product_id})")
+        update_user_status(f"Книга (ID - {product_id})")
         t = load_theme()
         for product_tag in product_tags:
             session["rec"].append(product_tag)
