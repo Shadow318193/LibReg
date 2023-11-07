@@ -1365,6 +1365,11 @@ def order_info(order_id):
                                 if request.form.get("next_step").isdigit():
                                     if int(request.form["next_step"]) == order.status:
                                         order.status += 1
+                                        if order.status == max(ORDER_STATUS.keys()):
+                                            for book_id in order.books.split(";"):
+                                                book = db_sess.query(Book).filter(Book.id == book_id).first()
+                                                book.status = 0
+                                                book.owner = None
                                         db_sess.commit()
                                     elif int(request.form["next_step"]) > max(ORDER_STATUS.keys()):
                                         flash("Администратору: некорректный value внутри кнопки "
