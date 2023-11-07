@@ -79,14 +79,14 @@ def cart_check():
         for product_id in session["cart"].copy():
             if int(product_id) not in products_toggle_list:
                 session['cart'].pop(product_id)
-                write_log(f"Продукта с ID {product_id} не существует")
+                write_log(f"Книги с ID {product_id} не существует")
                 remove_flag = True
             elif not products_toggle_list[int(product_id)]:
                 session['cart'].pop(product_id)
-                write_log(f"Продукт с ID {product_id} больше не продаётся")
+                write_log(f"Книга с ID {product_id} больше не продаётся")
                 remove_flag = True
         if remove_flag:
-            flash("Некоторые товары были удалены из корзины по причине их несуществования или снятия с продажи",
+            flash("Некоторые книги были удалены из корзины по причине их несуществования или снятия с продажи",
                   "danger")
             session["cart_changed"] = True
         else:
@@ -518,7 +518,7 @@ def add_product():
         base_settings_update_check()
         if request.method == "GET":
             if not manufacturers_list:
-                flash("Сперва нужно создать производителя", "danger")
+                flash("Сперва нужно создать автора", "danger")
                 return redirect("/add_manufacturer")
             t = load_theme()
             return render_template("add_product.html", title=f"{SHOP_NAME} - добавление товара", THEMES=THEMES,
@@ -529,8 +529,7 @@ def add_product():
                                    manufacturers_list=manufacturers_list)
         elif request.method == "POST":
             if not base_settings_request_check():
-                if request.form.get("name") and request.form.get("about") and request.form.get("price") and \
-                        request.form.get("tags"):
+                if request.form.get("name") and request.form.get("about") and request.form.get("tags"):
                     files = request.files.getlist("files[]")
                     write_log("Проверка файлов:")
                     f_count = 0
@@ -547,8 +546,6 @@ def add_product():
                             request.form.get("name") else ""
                         session["about"] = request.form.get("about") if request.form.get("about") != "None" and \
                             request.form.get("about") else ""
-                        session["price"] = request.form.get("price") if request.form.get("price") != "None" and \
-                            request.form.get("price") else ""
                         session["tags"] = request.form.get("tags") if request.form.get("tags") != "None" and \
                             request.form.get("tags") else ""
                         session["manufacturer"] = request.form.get("manufacturer") if \
@@ -557,14 +554,12 @@ def add_product():
                     manufacturer = db_sess.query(Manufacturer).filter(Manufacturer.id ==
                                                                       request.form.get("manufacturer")).first()
                     if not manufacturer:
-                        write_log(f"Производителя с ID {request.form.get('manufacturer')} не существует")
-                        flash(f"Производителя с ID {request.form.get('manufacturer')} не существует", "danger")
+                        write_log(f"Автора с ID {request.form.get('manufacturer')} не существует")
+                        flash(f"Автора с ID {request.form.get('manufacturer')} не существует", "danger")
                         session["product_name"] = request.form.get("name") if request.form.get("name") != "None" and \
                             request.form.get("name") else ""
                         session["about"] = request.form.get("about") if request.form.get("about") != "None" and \
                             request.form.get("about") else ""
-                        session["price"] = request.form.get("price") if request.form.get("price") != "None" and \
-                            request.form.get("price") else ""
                         session["tags"] = request.form.get("tags") if request.form.get("tags") != "None" and \
                             request.form.get("tags") else ""
                         session["manufacturer"] = request.form.get("manufacturer") if \
@@ -573,7 +568,6 @@ def add_product():
                     product.poster_id = current_user.id
                     product.name = request.form.get("name")
                     product.about = request.form.get("about")
-                    product.price = request.form.get("price")
                     product.tags = request.form.get("tags")
                     product.manufacturer_id = manufacturer.id
                     product.images = ""
@@ -598,7 +592,6 @@ def add_product():
                     write_log("Картинки сохранены")
                     session["product_name"] = ""
                     session["about"] = ""
-                    session["price"] = ""
                     session["tags"] = ""
                     session["manufacturer"] = ""
                     return redirect(f"/products/{product.id}")
@@ -607,8 +600,6 @@ def add_product():
                         request.form.get("name") else ""
                     session["about"] = request.form.get("about") if request.form.get("about") != "None" and \
                         request.form.get("about") else ""
-                    session["price"] = request.form.get("price") if request.form.get("price") != "None" and \
-                        request.form.get("price") else ""
                     session["tags"] = request.form.get("tags") if request.form.get("tags") != "None" and \
                         request.form.get("tags") else ""
                     session["manufacturer"] = request.form.get("manufacturer") if \
@@ -625,14 +616,14 @@ def add_product():
 @login_required
 def add_manufacturer():
     base_settings_update_check()
-    update_user_status("Добавление производителя")
+    update_user_status("Добавление автора")
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.id == current_user.id).first()
     if user.is_admin or user.is_moderator:
         base_settings_update_check()
         if request.method == "GET":
             t = load_theme()
-            return render_template("add_manufacturer.html", title=f"{SHOP_NAME} - добавление производителя",
+            return render_template("add_manufacturer.html", title=f"{SHOP_NAME} - добавление автора",
                                    THEMES=THEMES, page_name="add_manufacturer", current_user=current_user, theme=t,
                                    hf_flag=False, YEAR=datetime.datetime.now().year, accept_images=accept_images,
                                    main_class="form-signin w-100 m-auto px-4 my-5 border-color-theme border "
@@ -725,29 +716,29 @@ def index():
                 count = int(request.form.get("count")) if request.form.get("count").isdigit() else 1
                 if count:
                     if request.form.get("put_into_cart") in session["cart"]:
-                        flash("Кол-во товара в корзине изменено", "success")
+                        flash("Кол-во книг в корзине изменено", "success")
                     else:
-                        flash("Товар добавлен в корзину", "success")
+                        flash("Книга добавлена в корзину", "success")
                     session["cart"][request.form.get("put_into_cart")] = count
                 else:
                     if request.form.get("put_into_cart") in session["cart"]:
                         session["cart"].pop(request.form.get("put_into_cart"))
-                        write_log(f'Товар с ID {request.form.get("put_into_cart")} убран из корзины')
-                        flash("Товар убран из корзины", "success")
+                        write_log(f'Книга с ID {request.form.get("put_into_cart")} убрана из корзины')
+                        flash("Книга убрана из корзины", "success")
                     else:
-                        flash("Товара не было в корзине", "danger")
+                        flash("Книги не было в корзине", "danger")
         elif "remove_from_cart" in request.form:
             if request.form.get("remove_from_cart") in session["cart"]:
                 db_sess = db_session.create_session()
                 if db_sess.query(Product).filter(Product.id == int(request.form.get("remove_from_cart"))).first():
-                    write_log('Товар с ID '
+                    write_log('Книга с ID '
                               f'{session["cart"][session["cart"].pop(request.form.get("remove_from_cart"))]} '
-                              'убран из корзины')
-                    flash("Товар убран из корзины", "success")
+                              'убрана из корзины')
+                    flash("Книга убрана из корзины", "success")
                 else:
-                    flash("Товара не существует", "danger")
+                    flash("Книги не существует", "danger")
             else:
-                flash("Товара не было в корзине", "danger")
+                flash("Книги не было в корзине", "danger")
         elif "clear_rec" in request.form:
             clear_rec()
         return redirect("/")
@@ -788,7 +779,7 @@ def home():
 def products():
     base_settings_update_check()
     if request.method == "GET":
-        update_user_status("Товары")
+        update_user_status("Книги")
         db_sess = db_session.create_session()
         if request.args.get("search"):
             if current_user.is_authenticated:
@@ -821,28 +812,28 @@ def products():
                 count = int(request.form.get("count")) if request.form.get("count").isdigit() else 1
                 if count:
                     if request.form.get("put_into_cart") in session["cart"]:
-                        flash("Кол-во товара в корзине изменено", "success")
+                        flash("Кол-во книг в корзине изменено", "success")
                     else:
-                        flash("Товар добавлен в корзину", "success")
+                        flash("Книга добавлена в корзину", "success")
                     session["cart"][request.form.get("put_into_cart")] = count
                 else:
                     if request.form.get("put_into_cart") in session["cart"]:
                         session["cart"].pop(request.form.get("put_into_cart"))
-                        write_log(f'Товар с ID {request.form.get("put_into_cart")} убран из корзины')
-                        flash("Товар убран из корзины", "success")
+                        write_log(f'Книга с ID {request.form.get("put_into_cart")} убрана из корзины')
+                        flash("Книга убрана из корзины", "success")
                     else:
-                        flash("Товара не было в корзине", "danger")
+                        flash("Книги не было в корзине", "danger")
         elif "remove_from_cart" in request.form:
             if request.form.get("remove_from_cart") in session["cart"]:
                 db_sess = db_session.create_session()
                 if db_sess.query(Product).filter(Product.id == int(request.form.get("remove_from_cart"))).first():
                     session["cart"].pop(request.form.get("remove_from_cart"))
-                    write_log(f'Товар с ID {request.form.get("remove_from_cart")} убран из корзины')
-                    flash("Товар убран из корзины", "success")
+                    write_log(f'Книга с ID {request.form.get("remove_from_cart")} убрана из корзины')
+                    flash("Книга убрана из корзины", "success")
                 else:
-                    flash("Товара не существует", "danger")
+                    flash("Книги не существует", "danger")
             else:
-                flash("Товара не было в корзине", "danger")
+                flash("Книги не было в корзине", "danger")
         elif "clear_rec" in request.form:
             clear_rec()
         return redirect("/products")
@@ -852,7 +843,7 @@ def products():
 def manufacturers():
     base_settings_update_check()
     if request.method == "GET":
-        update_user_status("Производители")
+        update_user_status("Авторы")
         db_sess = db_session.create_session()
         if request.args.get("search"):
             if current_user.is_authenticated:
@@ -874,7 +865,7 @@ def manufacturers():
                 manufacturers_list = list(db_sess.query(Manufacturer).filter(Manufacturer.toggle))
         manufacturers_list.sort(key=lambda x: x.name)
         t = load_theme()
-        return render_template("manufacturers.html", title=f"{SHOP_NAME} - производители", hf_flag=True,
+        return render_template("manufacturers.html", title=f"{SHOP_NAME} - авторы", hf_flag=True,
                                current_user=current_user, THEMES=THEMES, main_class="px-2", theme=t,
                                YEAR=datetime.datetime.now().year, page_name="manufacturers", COMPANY_NAME=COMPANY_NAME,
                                manufacturers_list=manufacturers_list)
@@ -911,39 +902,39 @@ def product_info(product_id):
 
                 if 0 < count <= max_book_count:
                     if str(product_id) in session["cart"]:
-                        flash("Кол-во товара в корзине изменено", "success")
+                        flash("Кол-во книг в корзине изменено", "success")
                     else:
-                        flash("Товар добавлен в корзину", "success")
+                        flash("Книга добавлена в корзину", "success")
                     session["cart"][str(product_id)] = count
                 elif not count:
                     if str(product_id) in session["cart"]:
                         session["cart"].pop(str(product_id))
-                        write_log(f'Товар с ID {product_id} убран из корзины')
-                        flash("Товар убран из корзины", "success")
+                        write_log(f'Книга с ID {product_id} убрана из корзины')
+                        flash("Книга убрана из корзины", "success")
                     else:
-                        flash("Товара не было в корзине", "danger")
+                        flash("Книги не было в корзине", "danger")
                 else:
                     session["cart"][str(product_id)] = max_book_count
-                    flash("Ваш спрос превысил количество этого товара, поэтому в корзину помещено "
-                          "максимально допустимое кол-во товаров", "warning")
+                    flash("Ваш спрос превысил количество экземпляров этой книги, поэтому в корзину помещено "
+                          "их максимально допустимое кол-во", "warning")
         elif "remove_from_cart" in request.form:
             if str(product_id) in session["cart"]:
                 db_sess = db_session.create_session()
                 if db_sess.query(Product).filter(Product.id == product_id).first():
                     session["cart"].pop(str(product_id))
-                    write_log(f'Товар с ID {product_id} убран из корзины')
-                    flash("Товар убран из корзины", "success")
+                    write_log(f'Книга с ID {product_id} убрана из корзины')
+                    flash("Книга убрана из корзины", "success")
                 else:
-                    flash("Товара не существует", "danger")
+                    flash("Книги не существует", "danger")
             else:
-                flash("Товара не было в корзине", "danger")
+                flash("Книги не было в корзине", "danger")
         if current_user.is_authenticated:
             if "delete_product" in request.form:
                 if current_user.is_admin or current_user.is_moderator:
                     orders_list = list(db_sess.query(Order))
                     for order in orders_list:
                         if int(product_id) in bake_dict_from_db(order.products_list, func_for_key=int):
-                            flash("Этот продукт удалить нельзя, он уже был когда-то заказан", "danger")
+                            flash("Эту книгу удалить нельзя, она уже была когда-то заказана", "danger")
                             return redirect(f"/products/{product_id}")
                     for img in product_images:
                         img_path = os.path.join(app.config["UPLOAD_FOLDER"], img)
@@ -952,8 +943,8 @@ def product_info(product_id):
                     name = product.name
                     db_sess.delete(product)
                     db_sess.commit()
-                    flash(f"Товар {name} (ID - {product_id}) успешно удалён", "success")
-                    write_log(f"Товар {name} (ID - {product_id}) был удалён")
+                    flash(f"Книга {name} (ID - {product_id}) успешно удалена", "success")
+                    write_log(f"Книга {name} (ID - {product_id}) был удалена")
                     return redirect("/products")
                 else:
                     flash("У вас нет прав")
@@ -964,22 +955,22 @@ def product_info(product_id):
                         if product.toggle:
                             product.toggle = False
                             db_sess.commit()
-                            flash(f"Товар {product.name} (ID - {product_id}) успешно отключён", "success")
-                            write_log(f"Товар {product.name} (ID - {product_id}) был отключён")
+                            flash(f"Книга {product.name} (ID - {product_id}) успешно отключена", "success")
+                            write_log(f"Книга {product.name} (ID - {product_id}) был отключена")
                         else:
                             product.toggle = True
                             db_sess.commit()
-                            flash(f"Товар {product.name} (ID - {product_id}) успешно включен", "success")
-                            write_log(f"Товар {product.name} (ID - {product_id}) был включен")
+                            flash(f"Книга {product.name} (ID - {product_id}) успешно включена", "success")
+                            write_log(f"Книга {product.name} (ID - {product_id}) был включена")
                     else:
-                        flash("Сначала надо включить производителя этого товара", "danger")
+                        flash("Сначала надо включить автора этой книги", "danger")
             elif "change_product_count" in request.form:
                 if current_user.is_admin or current_user.is_moderator:
                     if product.toggle:
                         if request.form.get("max_count").isdigit():
                             print(books, int(request.form.get("max_count")))
                             if books == int(request.form.get("max_count")):
-                                flash("Вы не меняли кол-во товаров", "warning")
+                                flash("Вы не меняли кол-во книг", "warning")
                             elif books < int(request.form.get("max_count")) and \
                                     int(request.form.get("max_count")) >= 0:
                                 for book_i in range(books, int(request.form.get("max_count"))):
@@ -1002,7 +993,7 @@ def product_info(product_id):
                         else:
                             flash("В поле максимального кол-ва книг нужно ввести число", "danger")
                     else:
-                        flash("Сначала надо включить этот товар", "danger")
+                        flash("Сначала надо включить эту книгу", "danger")
         return redirect(f"/products/{product_id}")
 
 
@@ -1040,7 +1031,7 @@ def manufacturer_info(manufacturer_id):
                                                                Product.manufacturer_id == manufacturer_id))
     products_list.sort(key=lambda x: x.name)
     if request.method == "GET":
-        update_user_status(f"Производитель (ID - {manufacturer_id})")
+        update_user_status(f"Автор (ID - {manufacturer_id})")
         t = load_theme()
         return render_template("manufacturer.html", title=f"{SHOP_NAME} - {manufacturer.name}", hf_flag=True,
                                THEMES=THEMES, current_user=current_user, main_class="px-2", theme=t,
@@ -1055,7 +1046,7 @@ def manufacturer_info(manufacturer_id):
                 for product_id in products_list_id:
                     for order in orders_list:
                         if product_id in bake_dict_from_db(order.products_list, func_for_key=int):
-                            flash("Нельзя удалить производителя: один из его товаров был заказан когда-либо", "danger")
+                            flash("Нельзя удалить автора: одна из его книг была заказана когда-либо", "danger")
                             return redirect(f"/manufacturers/{manufacturer_id}")
                 logo_path = os.path.join(app.config["UPLOAD_FOLDER"], manufacturer.logo)
                 if os.path.isfile(logo_path):
@@ -1069,12 +1060,12 @@ def manufacturer_info(manufacturer_id):
                     product_id = product.id
                     db_sess.delete(product)
                     db_sess.commit()
-                    write_log(f"Товар {name} (ID - {product_id}) был удалён")
+                    write_log(f"Книга {name} (ID - {product_id}) была удалена")
                 name = manufacturer.name
                 db_sess.delete(manufacturer)
                 db_sess.commit()
-                flash(f"Производитель {name} (ID - {manufacturer_id}) успешно удалён", "success")
-                write_log(f"Производитель {name} (ID - {manufacturer_id}) был удалён")
+                flash(f"Книга {name} (ID - {manufacturer_id}) успешно удалена", "success")
+                write_log(f"Книга {name} (ID - {manufacturer_id}) был удалена")
                 return redirect("/manufacturers")
             else:
                 flash("У вас нет прав", "danger")
@@ -1087,8 +1078,8 @@ def manufacturer_info(manufacturer_id):
                     for product in products_list:
                         product.toggle = False
                         product.poster_id = current_user.id
-                    flash("Производитель и все его товары выключены", "success")
-                    write_log(f"Производитель {manufacturer.id} (ID - {manufacturer_id}) был выключен")
+                    flash("Автор и все его книги выключены", "success")
+                    write_log(f"Автор {manufacturer.id} (ID - {manufacturer_id}) был выключен")
                     db_sess.commit()
                 else:
                     manufacturer.toggle = True
@@ -1097,9 +1088,9 @@ def manufacturer_info(manufacturer_id):
                     for product in products_list:
                         product.toggle = True
                         product.poster_id = current_user.id
-                    write_log(f"Производитель {manufacturer.id} (ID - {manufacturer_id}) был включен")
+                    write_log(f"Автор {manufacturer.id} (ID - {manufacturer_id}) был включен")
                     db_sess.commit()
-                    flash("Производитель и все его товары включены", "success")
+                    flash("Автор и все его книги включены", "success")
             else:
                 flash("У вас нет прав", "danger")
         elif "put_into_cart" in request.form:
@@ -1108,49 +1099,49 @@ def manufacturer_info(manufacturer_id):
                 count = int(request.form.get("count")) if request.form.get("count").isdigit() else 1
                 if count:
                     if request.form.get("put_into_cart") in session["cart"]:
-                        flash("Кол-во товара в корзине изменено", "success")
+                        flash("Кол-во книг в корзине изменено", "success")
                     else:
-                        flash("Товар добавлен в корзину", "success")
+                        flash("Книга добавлена в корзину", "success")
                     session["cart"][request.form.get("put_into_cart")] = count
                 else:
                     if request.form.get("put_into_cart") in session["cart"]:
                         session["cart"].pop(request.form.get("put_into_cart"))
-                        write_log(f'Товар с ID {request.form.get("put_into_cart")} убран из корзины')
-                        flash("Товар убран из корзины", "success")
+                        write_log(f'Книга с ID {request.form.get("put_into_cart")} убрана из корзины')
+                        flash("Книга убрана из корзины", "success")
                     else:
-                        flash("Товара не было в корзине", "danger")
+                        flash("Книги не было в корзине", "danger")
         elif "remove_from_cart" in request.form:
             if request.form.get("remove_from_cart") in session["cart"]:
                 db_sess = db_session.create_session()
                 if db_sess.query(Product).filter(Product.id == int(request.form.get("remove_from_cart"))).first():
                     session["cart"].pop(request.form.get("remove_from_cart"))
-                    write_log(f'Товар с ID {request.form.get("remove_from_cart")} убран из корзины')
-                    flash("Товар убран из корзины", "success")
+                    write_log(f'Книга с ID {request.form.get("remove_from_cart")} убрана из корзины')
+                    flash("Книга убрана из корзины", "success")
                 else:
-                    flash("Товара не существует", "danger")
+                    flash("Книги не существует", "danger")
             else:
-                flash("Товара не было в корзине", "danger")
+                flash("Книги не было в корзине", "danger")
         return redirect(f"/manufacturers/{manufacturer_id}")
 
 
 @app.route("/update_product/<product_id>", methods=["GET", "POST"])
 @login_required
 def update_product(product_id):
-    update_user_status("Изменение товара")
+    update_user_status("Изменение книги")
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.id == current_user.id).first()
     manufacturers_list = list(db_sess.query(Manufacturer))
     if user.is_admin or user.is_moderator:
         base_settings_update_check()
         if not manufacturers_list:
-            flash("Сперва нужно создать производителя", "danger")
+            flash("Сперва нужно создать автора", "danger")
             return redirect("/add_manufacturer")
         product = db_sess.query(Product).filter(Product.id == product_id).first()
         if not product:
             abort(404)
         if request.method == "GET":
             t = load_theme()
-            return render_template("update_product.html", title=f"{SHOP_NAME} - изменение товара",
+            return render_template("update_product.html", title=f"{SHOP_NAME} - изменение книги",
                                    page_name="change_product", current_user=current_user, theme=t,
                                    YEAR=datetime.datetime.now().year, hf_flag=False, accept_images=accept_images,
                                    main_class="form-signin w-100 m-auto px-4 my-5 border-color-theme border "
@@ -1175,14 +1166,12 @@ def update_product(product_id):
                 manufacturer = db_sess.query(Manufacturer).filter(Manufacturer.id ==
                                                                   request.form.get("manufacturer")).first()
                 if not manufacturer:
-                    write_log(f"Производителя с ID {request.form.get('manufacturer')} не существует")
-                    flash(f"Производителя с ID {request.form.get('manufacturer')} не существует", "danger")
+                    write_log(f"Автора с ID {request.form.get('manufacturer')} не существует")
+                    flash(f"Автора с ID {request.form.get('manufacturer')} не существует", "danger")
                     session["new_product_name"] = request.form.get("name") if request.form.get("name") and \
                         request.form.get("name") != "None" else product.name
                     session["new_about"] = request.form.get("about") if request.form.get("about") and \
                         request.form.get("about") != "None" else product.about
-                    session["new_price"] = request.form.get("price") if request.form.get("price") and \
-                        request.form.get("price") != "None" else product.price
                     session["new_tags"] = request.form.get("tags") if request.form.get("tags") and \
                         request.form.get("tags") != "None" else product.tags
                     session["new_manufacturer"] = product.manufacturer_id
@@ -1190,7 +1179,6 @@ def update_product(product_id):
                 product.poster_id = current_user.id
                 product.name = request.form.get("name")
                 product.about = request.form.get("about")
-                product.price = request.form.get("price")
                 product.tags = request.form.get("tags")
                 product.manufacturer_id = manufacturer.id
                 if images:
@@ -1210,7 +1198,6 @@ def update_product(product_id):
                 db_sess.commit()
                 session["new_product_name"] = ""
                 session["new_about"] = ""
-                session["new_price"] = ""
                 session["new_tags"] = ""
                 session["new_manufacturer"] = ""
                 return redirect(f"/products/{product.id}")
@@ -1219,8 +1206,6 @@ def update_product(product_id):
                     request.form.get("name") != "None" else product.name
                 session["new_about"] = request.form.get("about") if request.form.get("about") and \
                     request.form.get("about") != "None" else product.about
-                session["new_price"] = request.form.get("price") if request.form.get("price") and \
-                    request.form.get("price") != "None" else product.price
                 session["new_tags"] = request.form.get("tags") if request.form.get("tags") and \
                     request.form.get("tags") != "None" else product.tags
                 session["new_manufacturer"] = request.form.get("manufacturer") if request.form.get("manufacturer") and \
@@ -1234,7 +1219,7 @@ def update_product(product_id):
 @login_required
 def update_manufacturer(manufacturer_id):
     base_settings_update_check()
-    update_user_status("Изменение производителя")
+    update_user_status("Изменение автора")
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.id == current_user.id).first()
     if user.is_admin or user.is_moderator:
@@ -1244,7 +1229,7 @@ def update_manufacturer(manufacturer_id):
             abort(404)
         if request.method == "GET":
             t = load_theme()
-            return render_template("update_manufacturer.html", title=f"{SHOP_NAME} - изменение производителя",
+            return render_template("update_manufacturer.html", title=f"{SHOP_NAME} - изменение автора",
                                    THEMES=THEMES, page_name="update_manufacturer", current_user=current_user, theme=t,
                                    hf_flag=False, YEAR=datetime.datetime.now().year, accept_images=accept_images,
                                    main_class="form-signin w-100 m-auto px-4 my-5 border-color-theme border "
@@ -1405,16 +1390,11 @@ def order_info(order_id):
 def cart():
     base_settings_update_check()
     products_list = set()
-    cost = 0
     if session.get("cart"):
         db_sess = db_session.create_session()
         for product_id in session["cart"]:
             product = db_sess.query(Product).filter(Product.id == int(product_id)).first()
             products_list.add(product)
-            temp_cost = product.price * session["cart"][product_id]
-            cost += temp_cost
-            write_log(f"Товар {product.name} (ID - {product_id}): {temp_cost}₽")
-        write_log(f"Итого: {cost}₽")
     if request.method == "GET":
         update_user_status("Корзина")
         t = load_theme()
@@ -1430,35 +1410,35 @@ def cart():
                 count = int(request.form.get("count")) if request.form.get("count").isdigit() else 1
                 if count:
                     if request.form.get("change_count") in session["cart"]:
-                        flash("Кол-во товара в корзине изменено", "success")
+                        flash("Кол-во книг корзине изменено", "success")
                     else:
-                        flash("Товар добавлен в корзину", "success")
+                        flash("Книга добавлена в корзину", "success")
                     session["cart"][request.form.get("change_count")] = count
                 else:
                     if request.form.get("change_count") in session["cart"]:
                         session["cart"].pop(request.form.get("change_count"))
-                        write_log(f'Товар с ID {request.form.get("change_count")} убран из корзины')
-                        flash("Товар убран из корзины", "success")
+                        write_log(f'Книга с ID {request.form.get("change_count")} убрана из корзины')
+                        flash("Книга убрана из корзины", "success")
                     else:
-                        flash("Товара не было в корзине", "danger")
+                        flash("Книги не было в корзине", "danger")
         elif "remove_from_cart" in request.form:
             if request.form.get("remove_from_cart") in session["cart"]:
                 db_sess = db_session.create_session()
                 if db_sess.query(Product).filter(Product.id == int(request.form.get("remove_from_cart"))).first():
                     session["cart"].pop(request.form.get("remove_from_cart"))
-                    write_log(f'Товар с ID {request.form.get("remove_from_cart")} убран из корзины')
-                    flash("Товар убран из корзины", "success")
+                    write_log(f'Книга с ID {request.form.get("remove_from_cart")} убрана из корзины')
+                    flash("Книга убрана из корзины", "success")
                 else:
-                    flash("Товара не существует", "danger")
+                    flash("Книги не существует", "danger")
             else:
-                flash("Товара не было в корзине", "danger")
+                flash("Книги не было в корзине", "danger")
         elif "make_order" in request.form:
             if not session.get("cart"):
                 flash("Корзина пуста", "danger")
             elif current_user.is_authenticated:
                 if request.form.get("name") and request.form.get("address"):
                     if session.get("cart_changed"):
-                        flash("Покупка была предотвращена из-за изменений в товарах")
+                        flash("Бронирование было предотвращено из-за изменений в книгах")
                         session["cart_changed"] = False
                         return redirect("/cart")
                     db_sess = db_session.create_session()
@@ -1468,11 +1448,8 @@ def cart():
                     order.address = request.form.get("address")
                     order.commentary = request.form.get("commentary")
                     order.products_list = bake_dict_for_db(session.get("cart"))
-                    order.price = cost
-                    products_price = {}
                     books = []
                     for product in products_list:
-                        products_price[product.id] = product.price
                         for c in range(session.get("cart")[str(product.id)]):
                             book = db_sess.query(Book).filter(product.id == Book.product_id, Book.owner == None,
                                                               Book.toggle).first()
@@ -1480,7 +1457,6 @@ def cart():
                             book.owner = current_user.id
                             books.append(str(book.id))
                     order.books = ";".join(books)
-                    order.products_price = bake_dict_for_db(products_price)
                     db_sess.add(order)
                     db_sess.commit()
                     session["cart"].clear()

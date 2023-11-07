@@ -11,7 +11,6 @@ class Product(SqlAlchemyBase):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
     name = db.Column(db.String, nullable=False)
     about = db.Column(db.String, nullable=False)
-    price = db.Column(db.Integer, nullable=False)
     images = db.Column(db.String, nullable=False)
     image_preview = db.Column(db.String, nullable=True)
     tags = db.Column(db.String, nullable=False)
