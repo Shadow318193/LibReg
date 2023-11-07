@@ -1333,7 +1333,6 @@ def order_info(order_id):
                 update_user_status(f"Заказ №{order_id}")
                 t = load_theme()
                 products_in_order = bake_dict_from_db(order.products_list, func_for_key=int, func_for_item=int)
-                products_price = bake_dict_from_db(order.products_price, func_for_key=int, func_for_item=int)
                 products_list = set()
                 for product_id in products_in_order:
                     product = db_sess.query(Product).filter(Product.id == product_id).first()
@@ -1342,8 +1341,8 @@ def order_info(order_id):
                 return render_template("order.html", title=f"{SHOP_NAME} - заказ №{order_id}", hf_flag=True,
                                        current_user=current_user, THEMES=THEMES, main_class="px-2", theme=t,
                                        YEAR=datetime.datetime.now().year, page_name="order", COMPANY_NAME=COMPANY_NAME,
-                                       products_price=products_price, products_in_order=products_in_order,
-                                       products_list=products_list, order=order, ORDER_STATUS=ORDER_STATUS)
+                                       products_in_order=products_in_order, products_list=products_list,
+                                       order=order, ORDER_STATUS=ORDER_STATUS)
             elif request.method == "POST":
                 if "cancel" in request.form:
                     if current_user.is_authenticated:
@@ -1406,7 +1405,7 @@ def cart():
         t = load_theme()
         return render_template("cart.html", title=f"{SHOP_NAME} - корзина", hf_flag=True, current_user=current_user,
                                main_class="px-2", theme=t, YEAR=datetime.datetime.now().year, page_name="cart",
-                               COMPANY_NAME=COMPANY_NAME, THEMES=THEMES, products_list=products_list, cost=cost)
+                               COMPANY_NAME=COMPANY_NAME, THEMES=THEMES, products_list=products_list)
     elif request.method == "POST":
         if "clear_cart" in request.form:
             clear_cart()
@@ -1457,7 +1456,7 @@ def cart():
                     books = []
                     for product in products_list:
                         for c in range(session.get("cart")[str(product.id)]):
-                            book = db_sess.query(Book).filter(product.id == Book.product_id, Book.owner == None,
+                            book = db_sess.query(Book).filter(product.id == Book.product_id, Book.status == 0,
                                                               Book.toggle).first()
                             book.status = 1
                             book.owner = current_user.id
