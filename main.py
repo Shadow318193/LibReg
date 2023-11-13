@@ -769,10 +769,17 @@ def home():
     base_settings_update_check()
     if request.method == "GET":
         update_user_status("Личный кабинет")
+        db_sess = db_session.create_session()
+        books = db_sess.query(Book).filter(Book.owner == current_user.id)
+        products_list = {}
+        for book in books:
+            if book.product_id not in products_list:
+                product = db_sess.query(Product).filter(Product.id == book.product_id).first()
+                products_list[book.product_id] = product
         t = load_theme()
         return render_template("home.html", title=f"{SHOP_NAME} - личный кабинет", hf_flag=True, THEMES=THEMES,
                                current_user=current_user, main_class="px-2", theme=t, YEAR=datetime.datetime.now().year,
-                               page_name="home", COMPANY_NAME=COMPANY_NAME)
+                               page_name="home", COMPANY_NAME=COMPANY_NAME, books=books, products_list=products_list)
     elif request.method == "POST":
         if "clear_cart" in request.form:
             clear_cart()
@@ -1348,6 +1355,10 @@ def order_info(order_id):
                     if current_user.is_authenticated:
                         if current_user.id == order.poster_id or current_user.is_admin or current_user.is_moderator:
                             if order.status == 0:
+                                for book_id in order.books.split(";"):
+                                    book = db_sess.query(Book).filter(Book.id == book_id).first()
+                                    book.status = 0
+                                    book.owner = None
                                 db_sess.delete(order)
                                 db_sess.commit()
                                 flash(f"Заказ №{order_id} отменён", "success")

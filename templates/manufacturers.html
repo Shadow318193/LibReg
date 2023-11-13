@@ -3,10 +3,10 @@
 {% if current_user.is_admin or current_user.is_moderator %}
 <h1 class="text-theme-primary text-center indent">Инструменты модератора:</h1>
 <div class="text-center pt-3 pb-5">
-    <a href="/add_manufacturer" style="width: 80%;" class="btn btn-primary py-2">Добавить производителя</a>
+    <a href="/add_manufacturer" style="width: 80%;" class="btn btn-primary py-2">Добавить автора</a>
 </div>
 {% endif %}
-<h3 class="text-theme-primary indent border-bottom border-color-theme">Все производители:</h3>
+<h3 class="text-theme-primary indent border-bottom border-color-theme">Все авторы:</h3>
 {% if manufacturers_list %}
 <div class="row indent w-100 ms-0">
     {% for manufacturer in manufacturers_list %}
@@ -24,8 +24,8 @@
     {% endfor %}
 </div>
 {% elif request.args.get("search") %}
-<h3 class="text-theme-primary text-center">Производители с таким названием не найдены</h3>
+<h3 class="text-theme-primary text-center">Авторы с таким названием не найдены</h3>
 {% else %}
-<h3 class="text-theme-primary text-center">Производители на данный момент отсутствуют</h3>
+<h3 class="text-theme-primary text-center">Авторы на данный момент отсутствуют</h3>
 {% endif %}
 {% endblock %}

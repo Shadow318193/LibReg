@@ -8,6 +8,31 @@
     <h3>Адрес: {% if current_user.address %}{{ current_user.address }}{% else %}не указан{% endif %}</h3>
     <h3>Роль: {% if current_user.is_admin %}администратор{% elif current_user.is_moderator %}модератор{% else %}клиент{% endif %}</h3>
 </div>
+<h3 class="text-theme-primary indent {% if not books.count() %}border-color-theme border-bottom{% endif %}">Забронированные книги:</h3>
+{% if books.count() %}
+<div class="indent">
+    <div style="overflow: auto; display: flex; flex-direction: row;" class="border border-color-theme border-round">
+        {% for book in books %}
+        <div class="card card-theme text-theme-primary border-color-theme m-3 product-width">
+            <a href="/products/{{ book.product_id }}" class="border-bottom border-color-theme"><img src="/static/media/from_users/{{ products_list[book.product_id].image_preview }}" class="card-img-top" style="object-fit: cover; background: #fff;" alt="{{ products_list[book.product_id].name }}"></a>
+            <div class="card-body d-flex justify-content-between" style="flex-direction: column;">
+                <div class="pb-3">
+                    <h5 class="card-title text-center">{{ products_list[book.product_id].name }}</h5>
+                    <p class="card-text text-center">ID: <b>{{ book.id }}</b></p>
+                    </div>
+                <div>
+                    <div class="text-center py-1">
+                        <a href="/products/{{ book.product_id }}" class="btn btn-primary w-100">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<h3 class="text-theme-primary text-center">У вас сейчас нет забронированных книг</h3>
+{% endif %}
 <div class="text-center py-3 border-bottom border-color-theme">
     <a href="/settings" style="width: 80%;" class="btn btn-primary py-2">Поменять данные</a>
 </div>
