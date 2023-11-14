@@ -8,7 +8,10 @@
     <h3>Адрес: {% if current_user.address %}{{ current_user.address }}{% else %}не указан{% endif %}</h3>
     <h3>Роль: {% if current_user.is_admin %}администратор{% elif current_user.is_moderator %}модератор{% else %}клиент{% endif %}</h3>
 </div>
-<h3 class="text-theme-primary indent {% if not books.count() %}border-color-theme border-bottom{% endif %}">Забронированные книги:</h3>
+<div class="text-center py-3 border-bottom border-color-theme">
+    <a href="/settings" style="width: 80%;" class="btn btn-primary py-2">Поменять данные</a>
+</div>
+<h3 class="text-theme-primary indent py-3">Забронированные книги:</h3>
 {% if books.count() %}
 <div class="indent">
     <div style="overflow: auto; display: flex; flex-direction: row;" class="border border-color-theme border-round">
@@ -33,10 +36,7 @@
 {% else %}
 <h3 class="text-theme-primary text-center">У вас сейчас нет забронированных книг</h3>
 {% endif %}
-<div class="text-center py-3 border-bottom border-color-theme">
-    <a href="/settings" style="width: 80%;" class="btn btn-primary py-2">Поменять данные</a>
-</div>
-<form method="post" class="text-center py-1 mt-3">
+<form method="post" class="text-center pt-3 pb-1 mt-3 border-top border-color-theme">
     <button type="submit" name="clear_cart" style="width: 80%;" class="btn btn-primary py-2">Очистить корзину</button>
 </form>
 <form method="post" class="text-center py-1">

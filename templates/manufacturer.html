@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block main_content %}
 <div class="text-center pt-1 pb-5">
-    <a href="/manufacturers" style="width: 80%;" class="btn btn-primary py-2">Вернуться к производителям</a>
+    <a href="/manufacturers" style="width: 80%;" class="btn btn-primary py-2">Вернуться к авторам</a>
 </div>
 <div class="row indent w-100 ms-0 pb-2">
     <div class="col pb-3" style="min-width: 18rem;">
@@ -14,7 +14,7 @@
 </div>
 {% if manufacturer.toggle or current_user.is_admin or current_user.is_moderator %}
 {% if products_list %}
-<h3 class="text-theme-primary indent">Товары производителя:</h3>
+<h3 class="text-theme-primary indent">Книги автора:</h3>
 <div class="indent pb-3">
     <div style="overflow: auto; display: flex; flex-direction: row;" class="border border-color-theme border-round">
         {% for product in products_list %}
@@ -23,7 +23,6 @@
             <div class="card-body d-flex justify-content-between" style="flex-direction: column;">
                 <div class="pb-3">
                     <h5 class="card-title text-center">{{ product.name }}</h5>
-                    <p class="card-text text-center">{{ product.price }}₽</p>
                     {% if product.id|string in session["cart"] %}
                         <p class="card-text text-center">В корзине: <b>{{ session["cart"][product.id|string] }} шт.</b></p>
                     {% endif %}
@@ -45,7 +44,7 @@
                         {% endif %}
                     </form>
                     {% else %}
-                    <h5 class="card-title text-center pt-3">Товар отключен</h5>
+                    <h5 class="card-title text-center pt-3">Книга отключен</h5>
                     {% endif %}
                 </div>
             </div>
@@ -54,29 +53,29 @@
     </div>
 </div>
 {% elif request.args.get("search") %}
-<h3 class="text-theme-primary text-center pb-3">Товары с этим названием не найдены</h3>
+<h3 class="text-theme-primary text-center pb-3">Книги с этим названием не найдены</h3>
 {% else %}
-<h3 class="text-theme-primary text-center pb-3">У этого производителя нет товаров</h3>
+<h3 class="text-theme-primary text-center pb-3">У этого автора нет книг</h3>
 {% endif %}
 {% else %}
-<h3 class="text-theme-primary text-center pb-3">На данный момент производитель ничего не продаёт</h3>
+<h3 class="text-theme-primary text-center pb-3">На данный момент книги автора не выдаются</h3>
 {% endif %}
 {% if current_user.is_admin or current_user.is_moderator %}
 <h1 class="text-theme-primary text-center indent pt-3">Инструменты модератора:</h1>
-<p class="py-2 text-theme-primary indent text-center">Производитель в последний раз редактировался пользователем {{ poster.name }} (ID - {{ poster.id }}, права - {% if poster.is_admin %}администратор{% else %}модератор{% endif %})</p>
+<p class="py-2 text-theme-primary indent text-center">Автор в последний раз редактировался пользователем {{ poster.name }} (ID - {{ poster.id }}, права - {% if poster.is_admin %}администратор{% else %}модератор{% endif %})</p>
 {% if current_user.is_admin and poster.id != current_user.id %}
 <div class="pb-5 text-center indent">
     <a href="/admin?search={{ poster.id }}#user-{{ poster.id }}" style="width: 80%;" class="btn btn-primary">Настроить права пользователя</a>
 </div>
 {% endif %}
 <div class="pt-3 text-center indent">
-    <a href="/update_manufacturer/{{ manufacturer.id }}" style="width: 80%;" class="btn btn-primary">Изменить производителя</a>
+    <a href="/update_manufacturer/{{ manufacturer.id }}" style="width: 80%;" class="btn btn-primary">Изменить автора</a>
 </div>
 <form class="py-3 text-center indent" method="post">
-    <button type="submit" name="toggle_manufacturer" style="width: 80%;" class="btn btn-primary">{% if manufacturer.toggle %}Выключить{% else %}Включить{% endif %} производителя и все его товары</button>
+    <button type="submit" name="toggle_manufacturer" style="width: 80%;" class="btn btn-primary">{% if manufacturer.toggle %}Выключить{% else %}Включить{% endif %} автора и все его книги</button>
 </form>
 <form class="pb-3 text-center indent" method="post">
-    <button type="submit" name="delete_manufacturer" style="width: 80%;" class="btn btn-danger">Удалить производителя и все его товары</button>
+    <button type="submit" name="delete_manufacturer" style="width: 80%;" class="btn btn-danger">Удалить автора и все его книги</button>
 </form>
 {% endif %}
 {% endblock %}

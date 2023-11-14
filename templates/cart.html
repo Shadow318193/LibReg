@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block main_content %}
 <form method="post" class="text-center pt-1 pb-4">
-    <button type="submit" name="clear_cart" style="width: 80%;" class="btn btn-primary py-2">Очистить корзину</button>
+    <button type="submit" name="clear_cart" style="width: 80%;" class="btn btn-primary py-2">Очистить список бронирования</button>
 </form>
-<h3 class="text-theme-primary indent border-bottom border-color-theme mb-3">Корзина:</h3>
+<h3 class="text-theme-primary indent border-bottom border-color-theme mb-3">Страница бронирования:</h3>
 {% if products_list %}
 <div class="row indent w-100 ms-0 pb-5">
     {% for product in products_list %}
@@ -27,7 +27,7 @@
                             <button type="submit" name="change_count" value="{{ product.id }}" class="btn btn-primary btn-auto-size w-100">Изменить кол-во</button>
                         </div>
                         <div class="text-center">
-                            <button type="submit" name="remove_from_cart" value="{{ product.id }}" class="btn btn-primary btn-auto-size w-100">Удалить из корзины</button>
+                            <button type="submit" name="remove_from_cart" value="{{ product.id }}" class="btn btn-primary btn-auto-size w-100">Убрать из списка на бронирование</button>
                         </div>
                     </form>
                 </div>
@@ -37,7 +37,7 @@
     {% endfor %}
 </div>
 {% if current_user.is_authenticated %}
-<h3 class="text-theme-primary indent border-bottom border-color-theme mb-3">Оформление заказа:</h3>
+<h3 class="text-theme-primary indent border-bottom border-color-theme mb-3">Оформление бронирования:</h3>
 <form method="post" class="text-center pt-3 pb-5" style="margin: 0 10%;">
     <div class="form-floating d-flex justify-content-center">
         <input type="text" class="form-control form-control-begin" id="floatingName" name="name" placeholder="Название" value="{{ current_user.name }}">
@@ -48,13 +48,13 @@
         <label for="floatingName">Адрес</label>
     </div>
     <div class="form-floating d-flex justify-content-center">
-        <input type="text" class="form-control form-control-end" id="floatingCommentary" name="commentary" placeholder="Комментарий к заказу" value="{% if session.get('commentary') %}{{ session.get('commentary') }}{% endif %}">
+        <input type="text" class="form-control form-control-end" id="floatingCommentary" name="commentary" placeholder="Комментарий" value="{% if session.get('commentary') %}{{ session.get('commentary') }}{% endif %}">
         <label for="floatingName">Комментарий к заказу</label>
     </div>
     <button type="submit" name="make_order" class="btn btn-primary w-100 py-2">Оформить</button>
 </form>
 {% else %}
-<h3 class="text-theme-primary text-center">Войдите или зарегистрируйтесь, чтобы оформить заказ. Корзина не очистится</h3>
+<h3 class="text-theme-primary text-center">Войдите или зарегистрируйтесь, чтобы оформить бронирование. Список не очистится</h3>
 {% endif %}
 {% elif request.args.get("search") %}
 <h3 class="text-theme-primary text-center">Книги c таким названием не найдены</h3>
