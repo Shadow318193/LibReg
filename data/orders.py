@@ -12,10 +12,9 @@ class Order(SqlAlchemyBase):
     poster_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     poster_name = db.Column(db.String, nullable=False)
     products_list = db.Column(db.String, nullable=False)
-    address = db.Column(db.String, nullable=False)
     books = db.Column(db.String, nullable=False)
-    commentary = db.Column(db.String, nullable=True)
     status = db.Column(db.Integer, nullable=False, default=0)
+    deadline = db.Column(db.DateTime, nullable=False)
     creation_date = db.Column(db.DateTime, default=datetime.now)
 
     user = orm.relation("User")

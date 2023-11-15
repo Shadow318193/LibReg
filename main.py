@@ -1345,11 +1345,12 @@ def order_info(order_id):
                     product = db_sess.query(Product).filter(Product.id == product_id).first()
                     if product:
                         products_list.add(product)
+                deadline = prettify_datetime(order.deadline)
                 return render_template("order.html", title=f"{SHOP_NAME} - заказ №{order_id}", hf_flag=True,
                                        current_user=current_user, THEMES=THEMES, main_class="px-2", theme=t,
                                        YEAR=datetime.datetime.now().year, page_name="order", COMPANY_NAME=COMPANY_NAME,
                                        products_in_order=products_in_order, products_list=products_list,
-                                       order=order, ORDER_STATUS=ORDER_STATUS)
+                                       order=order, ORDER_STATUS=ORDER_STATUS, deadline=deadline)
             elif request.method == "POST":
                 if "cancel" in request.form:
                     if current_user.is_authenticated:
@@ -1358,6 +1359,7 @@ def order_info(order_id):
                                 for book_id in order.books.split(";"):
                                     book = db_sess.query(Book).filter(Book.id == book_id).first()
                                     book.status = 0
+                                    book.deadline = None
                                     book.owner = None
                                 db_sess.delete(order)
                                 db_sess.commit()
@@ -1380,6 +1382,7 @@ def order_info(order_id):
                                             for book_id in order.books.split(";"):
                                                 book = db_sess.query(Book).filter(Book.id == book_id).first()
                                                 book.status = 0
+                                                book.deadline = None
                                                 book.owner = None
                                         db_sess.commit()
                                     elif int(request.form["next_step"]) > max(ORDER_STATUS.keys()):
@@ -1457,18 +1460,17 @@ def cart():
             if not session.get("cart"):
                 flash("Список пуст", "danger")
             elif current_user.is_authenticated:
-                if request.form.get("name") and request.form.get("address"):
+                if request.form.get("name") and request.form.get("weeks"):
                     if session.get("cart_changed"):
-                        flash("Бронирование было предотвращено из-за изменений в книгах")
+                        flash("Бронирование было предотвращено из-за изменений в данных некоторых книг")
                         session["cart_changed"] = False
                         return redirect("/cart")
                     db_sess = db_session.create_session()
                     order = Order()
                     order.poster_id = current_user.id
                     order.poster_name = name_correct(request.form.get("name"))
-                    order.address = request.form.get("address")
-                    order.commentary = request.form.get("commentary")
                     order.products_list = bake_dict_for_db(session.get("cart"))
+                    order.deadline = datetime.datetime.now() + datetime.timedelta(weeks=int(request.form.get("weeks")))
                     books = []
                     for product in products_list:
                         for c in range(session.get("cart")[str(product.id)]):
@@ -1476,16 +1478,17 @@ def cart():
                                                               Book.toggle).first()
                             book.status = 1
                             book.owner = current_user.id
+                            book.deadline = order.deadline
                             books.append(str(book.id))
                     order.books = ";".join(books)
                     db_sess.add(order)
                     db_sess.commit()
                     session["cart"].clear()
-                    session["commentary"] = ""
+                    session["weeks"] = ""
                     return redirect(f"/orders/{order.id}")
                 else:
-                    session["commentary"] = request.form.get("commentary") if \
-                        request.form.get("commentary") != "None" and request.form.get("commentary") else ""
+                    session["weeks"] = request.form.get("weeks") if \
+                        request.form.get("weeks") != "None" and request.form.get("weeks") else ""
                     flash("Не все обязательные поля заполнены", "danger")
             else:
                 abort(401)

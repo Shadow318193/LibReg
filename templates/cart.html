@@ -44,12 +44,8 @@
         <label for="floatingName">Имя</label>
     </div>
     <div class="form-floating d-flex justify-content-center">
-        <input type="text" class="form-control" id="floatingAddress" name="address" placeholder="Адрес" value="{% if current_user.address %}{{ current_user.address }}{% endif %}">
-        <label for="floatingName">Адрес</label>
-    </div>
-    <div class="form-floating d-flex justify-content-center">
-        <input type="text" class="form-control form-control-end" id="floatingCommentary" name="commentary" placeholder="Комментарий" value="{% if session.get('commentary') %}{{ session.get('commentary') }}{% endif %}">
-        <label for="floatingName">Комментарий к заказу</label>
+        <input type="number" class="form-control form-control-end" id="floatingWeeks" name="weeks" placeholder="Недели (от 1 до 4)" value="{% if session.get('weeks') %}{{ session.get('weeks') }}{% else %}1{% endif %}">
+        <label for="floatingName">Кол-во недель, на которое вы хотите взять книгу (от 1 до 4)</label>
     </div>
     <button type="submit" name="make_order" class="btn btn-primary w-100 py-2">Оформить</button>
 </form>
@@ -57,7 +53,7 @@
 <h3 class="text-theme-primary text-center">Войдите или зарегистрируйтесь, чтобы оформить бронирование. Список не очистится</h3>
 {% endif %}
 {% elif request.args.get("search") %}
-<h3 class="text-theme-primary text-center">Книги c таким названием не найдены</h3>
+<h3 class="text-theme-primary text-center">Книги с таким названием не найдены</h3>
 {% else %}
 <h3 class="text-theme-primary text-center">Книг в корзине на данный момент нет</h3>
 {% endif %}

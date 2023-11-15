@@ -1,3 +1,5 @@
+import datetime
+
 from __shop_config import IMAGES, VIDEOS, AUDIOS, FILE_TYPES
 
 from PIL import Image
@@ -82,6 +84,14 @@ def rec_sort(tags, rec):
             return True
     return False
 
+
+def prettify_datetime(t: datetime.datetime):
+    t = str(t).split()
+    date = ".".join(t[0].split("-")[::-1])
+    time = t[1].split(":")
+    time[-1] = time[-1][:2]
+    time = ":".join(time)
+    return {"date": date, "time": time}
 
 if __name__ == "__main__":
     s = input("Введите строку: ")

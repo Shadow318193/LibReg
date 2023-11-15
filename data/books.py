@@ -15,6 +15,7 @@ class Book(SqlAlchemyBase):
     poster_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     creation_date = db.Column(db.DateTime, default=datetime.now)
     toggle = db.Column(db.Boolean, nullable=False, default=True)
+    deadline = db.Column(db.DateTime, nullable=True)
 
     user = orm.relation("User")
     product = orm.relation("Product")
