@@ -46,16 +46,16 @@
         {% if product.toggle %}
         <form class="text-center pt-3" method="post">
             {% if product.id|string in session["cart"] %}
-            <h3>В корзине: {{ session["cart"][product.id|string] }} шт.</h3>
+            <h3>В списке: {{ session["cart"][product.id|string] }} шт.</h3>
             {% endif %}
             <h3>Всего: {{ books }} (доступно {{ max_book_count }}) шт.</h3>
             <div class="pb-5 d-flex justify-content-center">
                 <input type="number" name="count" class="form-control form-control-round border-color-theme input-color-theme font-auto" style="width: 80%;" placeholder="Кол-во штук...">
             </div>
-            <button type="submit" name="put_into_cart" class="btn btn-primary" style="width: 80%;">{% if product.id|string in session["cart"] %}Изменить кол-во в корзине{% else %}Добавить в корзину{% endif %}</button>
+            <button type="submit" name="put_into_cart" class="btn btn-primary" style="width: 80%;">{% if product.id|string in session["cart"] %}Изменить кол-во в списке{% else %}Добавить в список{% endif %}</button>
             {% if product.id|string in session["cart"] %}
             <div class="pt-2 pb-4">
-                <button type="submit" name="remove_from_cart" class="btn btn-primary" style="width: 80%;">Удалить из корзины</button>
+                <button type="submit" name="remove_from_cart" class="btn btn-primary" style="width: 80%;">Удалить из списка</button>
             </div>
             {% endif %}
         </form>
@@ -65,7 +65,7 @@
     </div>
 </div>
 <div class="text-center border-color-theme border-top pt-4 pb-4">
-    <a href="/cart" style="width: 80%;" class="btn btn-primary py-4">Отправиться в корзину</a>
+    <a href="/cart" style="width: 80%;" class="btn btn-primary py-4">Отправиться в список</a>
 </div>
 {% if current_user.is_admin or current_user.is_moderator %}
 <h1 class="text-theme-primary text-center indent border-color-theme border-top pt-4">Инструменты модератора:</h1>

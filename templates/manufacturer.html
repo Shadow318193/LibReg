@@ -24,7 +24,7 @@
                 <div class="pb-3">
                     <h5 class="card-title text-center">{{ product.name }}</h5>
                     {% if product.id|string in session["cart"] %}
-                        <p class="card-text text-center">В корзине: <b>{{ session["cart"][product.id|string] }} шт.</b></p>
+                        <p class="card-text text-center">В списке: <b>{{ session["cart"][product.id|string] }} шт.</b></p>
                     {% endif %}
                 </div>
                 <div>

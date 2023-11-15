@@ -92,7 +92,7 @@ def cart_check():
                 write_log(f"Слишком высокий спрос на книгу с ID {product_id}")
                 remove_flag = True
         if remove_flag:
-            flash("Некоторые книги были удалены из корзины по причине их несуществования или снятия с продажи",
+            flash("Некоторые книги были удалены из списка по причине их несуществования или снятия с продажи",
                   "danger")
             session["cart_changed"] = True
         else:
@@ -142,7 +142,7 @@ def update_user_status(page: str):
             session["theme"] = DEFAULT_THEME
         write_log(f"{str(t)} - запрос от анонимного пользователя (IP - {request.remote_addr}) [{page}, "
                   f"{request.method}]")
-    write_log("Состояние корзины ("
+    write_log("Состояние списка ("
               f"{'ID - ' + str(current_user.id) if current_user.is_authenticated else 'IP - ' + request.remote_addr}"
               f"): {session.get('cart') if session.get('cart') else 'пусто'}")
     write_log("Состояние рекомендаций ("
@@ -164,10 +164,10 @@ def clear_cart():
         request.remote_addr
     if session.get("cart"):
         session["cart"].clear()
-        write_log(f"Корзина очищена (Запрос от пользователя {user_text})")
-        flash("Корзина очищена", "success")
+        write_log(f"Список очищен (Запрос от пользователя {user_text})")
+        flash("Список очищен", "success")
     else:
-        flash("Корзина уже пуста", "danger")
+        flash("Список уже пуст", "danger")
 
 
 def clear_rec():
@@ -722,29 +722,29 @@ def index():
                 count = int(request.form.get("count")) if request.form.get("count").isdigit() else 1
                 if count:
                     if request.form.get("put_into_cart") in session["cart"]:
-                        flash("Кол-во книг в корзине изменено", "success")
+                        flash("Кол-во книг в списке изменено", "success")
                     else:
-                        flash("Книга добавлена в корзину", "success")
+                        flash("Книга добавлена в список", "success")
                     session["cart"][request.form.get("put_into_cart")] = count
                 else:
                     if request.form.get("put_into_cart") in session["cart"]:
                         session["cart"].pop(request.form.get("put_into_cart"))
-                        write_log(f'Книга с ID {request.form.get("put_into_cart")} убрана из корзины')
-                        flash("Книга убрана из корзины", "success")
+                        write_log(f'Книга с ID {request.form.get("put_into_cart")} убрана из списка')
+                        flash("Книга убрана из списка", "success")
                     else:
-                        flash("Книги не было в корзине", "danger")
+                        flash("Книги не было в списке", "danger")
         elif "remove_from_cart" in request.form:
             if request.form.get("remove_from_cart") in session["cart"]:
                 db_sess = db_session.create_session()
                 if db_sess.query(Product).filter(Product.id == int(request.form.get("remove_from_cart"))).first():
                     write_log('Книга с ID '
                               f'{session["cart"][session["cart"].pop(request.form.get("remove_from_cart"))]} '
-                              'убрана из корзины')
-                    flash("Книга убрана из корзины", "success")
+                              'убрана из списка')
+                    flash("Книга убрана из списка", "success")
                 else:
                     flash("Книги не существует", "danger")
             else:
-                flash("Книги не было в корзине", "danger")
+                flash("Книги не было в списке", "danger")
         elif "clear_rec" in request.form:
             clear_rec()
         return redirect("/")
@@ -825,28 +825,28 @@ def products():
                 count = int(request.form.get("count")) if request.form.get("count").isdigit() else 1
                 if count:
                     if request.form.get("put_into_cart") in session["cart"]:
-                        flash("Кол-во книг в корзине изменено", "success")
+                        flash("Кол-во книг в списке изменено", "success")
                     else:
-                        flash("Книга добавлена в корзину", "success")
+                        flash("Книга добавлена в список", "success")
                     session["cart"][request.form.get("put_into_cart")] = count
                 else:
                     if request.form.get("put_into_cart") in session["cart"]:
                         session["cart"].pop(request.form.get("put_into_cart"))
-                        write_log(f'Книга с ID {request.form.get("put_into_cart")} убрана из корзины')
-                        flash("Книга убрана из корзины", "success")
+                        write_log(f'Книга с ID {request.form.get("put_into_cart")} убрана из списка')
+                        flash("Книга убрана из списка", "success")
                     else:
-                        flash("Книги не было в корзине", "danger")
+                        flash("Книги не было в списке", "danger")
         elif "remove_from_cart" in request.form:
             if request.form.get("remove_from_cart") in session["cart"]:
                 db_sess = db_session.create_session()
                 if db_sess.query(Product).filter(Product.id == int(request.form.get("remove_from_cart"))).first():
                     session["cart"].pop(request.form.get("remove_from_cart"))
-                    write_log(f'Книга с ID {request.form.get("remove_from_cart")} убрана из корзины')
-                    flash("Книга убрана из корзины", "success")
+                    write_log(f'Книга с ID {request.form.get("remove_from_cart")} убрана из списка')
+                    flash("Книга убрана из списка", "success")
                 else:
                     flash("Книги не существует", "danger")
             else:
-                flash("Книги не было в корзине", "danger")
+                flash("Книги не было в списке", "danger")
         elif "clear_rec" in request.form:
             clear_rec()
         return redirect("/products")
@@ -915,32 +915,32 @@ def product_info(product_id):
 
                 if 0 < count <= max_book_count:
                     if str(product_id) in session["cart"]:
-                        flash("Кол-во книг в корзине изменено", "success")
+                        flash("Кол-во книг в списке изменено", "success")
                     else:
-                        flash("Книга добавлена в корзину", "success")
+                        flash("Книга добавлена в список", "success")
                     session["cart"][str(product_id)] = count
                 elif not count:
                     if str(product_id) in session["cart"]:
                         session["cart"].pop(str(product_id))
-                        write_log(f'Книга с ID {product_id} убрана из корзины')
-                        flash("Книга убрана из корзины", "success")
+                        write_log(f'Книга с ID {product_id} убрана из списка')
+                        flash("Книга убрана из списка", "success")
                     else:
-                        flash("Книги не было в корзине", "danger")
+                        flash("Книги не было в списке", "danger")
                 else:
                     session["cart"][str(product_id)] = max_book_count
-                    flash("Ваш спрос превысил количество экземпляров этой книги, поэтому в корзину помещено "
+                    flash("Ваш спрос превысил количество экземпляров этой книги, поэтому в список помещено "
                           "их максимально допустимое кол-во", "warning")
         elif "remove_from_cart" in request.form:
             if str(product_id) in session["cart"]:
                 db_sess = db_session.create_session()
                 if db_sess.query(Product).filter(Product.id == product_id).first():
                     session["cart"].pop(str(product_id))
-                    write_log(f'Книга с ID {product_id} убрана из корзины')
-                    flash("Книга убрана из корзины", "success")
+                    write_log(f'Книга с ID {product_id} убрана из списка')
+                    flash("Книга убрана из списка", "success")
                 else:
                     flash("Книги не существует", "danger")
             else:
-                flash("Книги не было в корзине", "danger")
+                flash("Книги не было в списке", "danger")
         if current_user.is_authenticated:
             if "delete_product" in request.form:
                 if current_user.is_admin or current_user.is_moderator:
@@ -1112,28 +1112,28 @@ def manufacturer_info(manufacturer_id):
                 count = int(request.form.get("count")) if request.form.get("count").isdigit() else 1
                 if count:
                     if request.form.get("put_into_cart") in session["cart"]:
-                        flash("Кол-во книг в корзине изменено", "success")
+                        flash("Кол-во книг в списке изменено", "success")
                     else:
-                        flash("Книга добавлена в корзину", "success")
+                        flash("Книга добавлена в список", "success")
                     session["cart"][request.form.get("put_into_cart")] = count
                 else:
                     if request.form.get("put_into_cart") in session["cart"]:
                         session["cart"].pop(request.form.get("put_into_cart"))
-                        write_log(f'Книга с ID {request.form.get("put_into_cart")} убрана из корзины')
-                        flash("Книга убрана из корзины", "success")
+                        write_log(f'Книга с ID {request.form.get("put_into_cart")} убрана из списка')
+                        flash("Книга убрана из списка", "success")
                     else:
-                        flash("Книги не было в корзине", "danger")
+                        flash("Книги не было в списке", "danger")
         elif "remove_from_cart" in request.form:
             if request.form.get("remove_from_cart") in session["cart"]:
                 db_sess = db_session.create_session()
                 if db_sess.query(Product).filter(Product.id == int(request.form.get("remove_from_cart"))).first():
                     session["cart"].pop(request.form.get("remove_from_cart"))
-                    write_log(f'Книга с ID {request.form.get("remove_from_cart")} убрана из корзины')
-                    flash("Книга убрана из корзины", "success")
+                    write_log(f'Книга с ID {request.form.get("remove_from_cart")} убрана из списка')
+                    flash("Книга убрана из списка", "success")
                 else:
                     flash("Книги не существует", "danger")
             else:
-                flash("Книги не было в корзине", "danger")
+                flash("Книги не было в списке", "danger")
         return redirect(f"/manufacturers/{manufacturer_id}")
 
 
@@ -1417,11 +1417,11 @@ def cart():
             product = db_sess.query(Product).filter(Product.id == int(product_id)).first()
             products_list.add(product)
     if request.method == "GET":
-        update_user_status("Корзина")
+        update_user_status("Страница бронирования книг")
         t = load_theme()
-        return render_template("cart.html", title=f"{SHOP_NAME} - корзина", hf_flag=True, current_user=current_user,
-                               main_class="px-2", theme=t, YEAR=datetime.datetime.now().year, page_name="cart",
-                               COMPANY_NAME=COMPANY_NAME, THEMES=THEMES, products_list=products_list)
+        return render_template("cart.html", title=f"{SHOP_NAME} - страница бронирования книг", hf_flag=True,
+                               current_user=current_user, main_class="px-2", theme=t, YEAR=datetime.datetime.now().year,
+                               page_name="cart", COMPANY_NAME=COMPANY_NAME, THEMES=THEMES, products_list=products_list)
     elif request.method == "POST":
         if "clear_cart" in request.form:
             clear_cart()
@@ -1431,31 +1431,31 @@ def cart():
                 count = int(request.form.get("count")) if request.form.get("count").isdigit() else 1
                 if count:
                     if request.form.get("change_count") in session["cart"]:
-                        flash("Кол-во книг корзине изменено", "success")
+                        flash("Кол-во книг списке изменено", "success")
                     else:
-                        flash("Книга добавлена в корзину", "success")
+                        flash("Книга добавлена в список", "success")
                     session["cart"][request.form.get("change_count")] = count
                 else:
                     if request.form.get("change_count") in session["cart"]:
                         session["cart"].pop(request.form.get("change_count"))
-                        write_log(f'Книга с ID {request.form.get("change_count")} убрана из корзины')
-                        flash("Книга убрана из корзины", "success")
+                        write_log(f'Книга с ID {request.form.get("change_count")} убрана из списка')
+                        flash("Книга убрана из списка", "success")
                     else:
-                        flash("Книги не было в корзине", "danger")
+                        flash("Книги не было в списке", "danger")
         elif "remove_from_cart" in request.form:
             if request.form.get("remove_from_cart") in session["cart"]:
                 db_sess = db_session.create_session()
                 if db_sess.query(Product).filter(Product.id == int(request.form.get("remove_from_cart"))).first():
                     session["cart"].pop(request.form.get("remove_from_cart"))
-                    write_log(f'Книга с ID {request.form.get("remove_from_cart")} убрана из корзины')
-                    flash("Книга убрана из корзины", "success")
+                    write_log(f'Книга с ID {request.form.get("remove_from_cart")} убрана из списка')
+                    flash("Книга убрана из списка", "success")
                 else:
                     flash("Книги не существует", "danger")
             else:
-                flash("Книги не было в корзине", "danger")
+                flash("Книги не было в списке", "danger")
         elif "make_order" in request.form:
             if not session.get("cart"):
-                flash("Корзина пуста", "danger")
+                flash("Список пуст", "danger")
             elif current_user.is_authenticated:
                 if request.form.get("name") and request.form.get("address"):
                     if session.get("cart_changed"):

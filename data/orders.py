@@ -2,7 +2,7 @@ import sqlalchemy as db
 from .db_session import SqlAlchemyBase
 from sqlalchemy import orm
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Order(SqlAlchemyBase):

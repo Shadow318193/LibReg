@@ -3,7 +3,7 @@
 <div class="text-center pt-1 pb-5">
     <a href="/orders" style="width: 80%;" class="btn btn-primary py-2">Вернуться к заказам</a>
 </div>
-<h1 class="text-theme-primary indent border-bottom border-color-theme mb-3">Заказ №{{ order.id }}:</h1>
+<h1 class="text-theme-primary indent border-bottom border-color-theme mb-3">Список забронированных книг №{{ order.id }}:</h1>
 <div class="row indent w-100 ms-0">
     {% for product in products_list %}
     <div class="col d-flex justify-content-center px-0">
@@ -22,15 +22,15 @@
     </div>
     {% endfor %}
 </div>
-<h3 class="text-theme-primary indent pb-1">Имя заказчика: {{ order.poster_name }}</h3>
+<h3 class="text-theme-primary indent pb-1">Имя бронирующего: {{ order.poster_name }}</h3>
 <h3 class="text-theme-primary indent pb-3">Адрес: {{ order.address }}</h3>
 <h1 class="text-theme-primary indent">Статус: {{ ORDER_STATUS[order.status] }}</h1>
 {% if current_user.id == order.poster_id or current_user.is_admin or current_user.is_moderator %}
 <form method="post" class="text-theme-primary text-center border-top border-color-theme pt-4 mt-3">
     {% if order.status == 0 %}
-    <button type="submit" style="width: 80%;" name="cancel" class="btn btn-danger py-2">Отменить заказ{% if (current_user.is_admin or current_user.is_moderator) and not current_user.id == order.poster_id %} (ВНИМАНИЕ: отмена чужого заказа без причины карается лишением модераторских прав){% endif %}</button>
+    <button type="submit" style="width: 80%;" name="cancel" class="btn btn-danger py-2">Отменить бронирование{% if (current_user.is_admin or current_user.is_moderator) and not current_user.id == order.poster_id %} (ВНИМАНИЕ: отмена чужого заказа без причины карается лишением модераторских прав){% endif %}</button>
     {% else %}
-    <button disabled style="width: 80%;" class="btn btn-danger py-2">Отменить заказ нельзя</button>
+    <button disabled style="width: 80%;" class="btn btn-danger py-2">Отменить бронирование нельзя</button>
     {% endif %}
 </form>
 {% endif %}
@@ -40,7 +40,7 @@
     {% if order.status + 1 in ORDER_STATUS %}
     <button type="submit" name="next_step" value="{{ order.status }}" style="width: 80%;" class="btn btn-primary py-2">Поменять статус на "{{ ORDER_STATUS[order.status + 1] }}"</button>
     {% else %}
-    <button disabled style="width: 80%;" class="btn btn-primary py-2">Менять статус нельзя: это последняя стадия заказа</button>
+    <button disabled style="width: 80%;" class="btn btn-primary py-2">Менять статус нельзя: это последняя стадия бронирования</button>
     {% endif %}
 </form>
 {% endif %}

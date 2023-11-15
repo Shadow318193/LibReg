@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block main_content %}
-<h3 class="text-theme-primary indent border-bottom border-color-theme mb-3">Ваши заказы:</h3>
+<h3 class="text-theme-primary indent border-bottom border-color-theme mb-3">Ваши забронированные книги:</h3>
 {% if orders_list %}
 <div class="row indent w-100 ms-0">
     {% for order in orders_list[::-1] %}
     <div class="col d-flex justify-content-center px-0">
         <div class="card card-theme text-bg-{{ theme }} text-theme-primary border-color-theme m-3 product-width">
             <div class="card-body">
-                <h5 class="card-title text-center">Заказ №{{ order.id }}</h5>
+                <h5 class="card-title text-center">Список забронированных книг №{{ order.id }}</h5>
                 <p class="card-text text-center">Статус: <b>{{ ORDER_STATUS[order.status] }}</b></p>
                 <div class="text-center py-1">
                     <a href="/orders/{{ order.id }}" class="btn btn-primary btn-auto-size w-100">Подробнее</a>
@@ -18,19 +18,19 @@
     {% endfor %}
 </div>
 {% elif request.args.get("search") %}
-<h3 class="text-theme-primary text-center">Заказ c таким номером не найден</h3>
+<h3 class="text-theme-primary text-center">Список с таким номером не найден</h3>
 {% else %}
-<h3 class="text-theme-primary text-center">У вас сейчас нет заказов</h3>
+<h3 class="text-theme-primary text-center">У вас сейчас нет списков</h3>
 {% endif %}
 {% if current_user.is_admin or current_user.is_moderator %}
-<h3 class="text-theme-primary indent border-bottom border-color-theme mb-3 pt-5">Активные заказы (модератор):</h3>
+<h3 class="text-theme-primary indent border-bottom border-color-theme mb-3 pt-5">Активные списки (модератор):</h3>
 {% if orders_list_mod %}
 <div class="row indent w-100 ms-0">
     {% for order in orders_list_mod[::-1] %}
     <div class="col d-flex justify-content-center px-0">
         <div class="card card-theme text-theme-primary border-color-theme m-3 product-width">
             <div class="card-body">
-                <h5 class="card-title text-center">Заказ №{{ order.id }} (ID заказчика - {{ order.poster_id }})</h5>
+                <h5 class="card-title text-center">Список №{{ order.id }} (ID заказчика - {{ order.poster_id }})</h5>
                 <p class="card-text text-center">Статус: <b>{{ ORDER_STATUS[order.status] }}</b></p>
                 <div class="text-center py-1">
                     <a href="/orders/{{ order.id }}" class="btn btn-primary btn-auto-size w-100">Подробнее</a>
@@ -41,9 +41,9 @@
     {% endfor %}
 </div>
 {% elif request.args.get("search") %}
-<h3 class="text-theme-primary text-center">Заказ c таким номером не найден</h3>
+<h3 class="text-theme-primary text-center">Спискок с таким номером не найден</h3>
 {% else %}
-<h3 class="text-theme-primary text-center">Активных заказов нет</h3>
+<h3 class="text-theme-primary text-center">Активных списков нет</h3>
 {% endif %}
 {% endif %}
 {% endblock %}

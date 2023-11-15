@@ -13,7 +13,7 @@
                 <div class="pb-3">
                     <h5 class="card-title text-center">{{ product.name }}</h5>
                     {% if product.id|string in session["cart"] %}
-                    <p class="card-text text-center">В корзине: <b>{{ session["cart"][product.id|string] }}</b></p>
+                    <p class="card-text text-center">В списке: <b>{{ session["cart"][product.id|string] }}</b></p>
                     {% endif %}
                     </div>
                 <div>
@@ -25,10 +25,10 @@
                         <div class="pb-2">
                             <input type="number" name="count" class="form-control form-control-round border-color-theme input-color-theme font-auto" placeholder="Кол-во штук...">
                         </div>
-                        <button type="submit" name="put_into_cart" value="{{ product.id }}" class="btn btn-primary btn-auto-size w-100">{% if product.id|string in session["cart"] %}Изменить кол-во{% else %}Добавить в корзину{% endif %}</button>
+                        <button type="submit" name="put_into_cart" value="{{ product.id }}" class="btn btn-primary btn-auto-size w-100">{% if product.id|string in session["cart"] %}Изменить кол-во{% else %}Добавить в список{% endif %}</button>
                         {% if product.id|string in session["cart"] %}
                         <div class="pt-2">
-                            <button type="submit" name="remove_from_cart" value="{{ product.id }}" class="btn btn-primary btn-auto-size w-100">Удалить из корзины</button>
+                            <button type="submit" name="remove_from_cart" value="{{ product.id }}" class="btn btn-primary btn-auto-size w-100">Удалить из списка</button>
                         </div>
                         {% endif %}
                     </form>
