@@ -1401,7 +1401,7 @@ def order_info(order_id):
                                     write_log("(!) Некорректный value внутри кнопки "
                                               f"({request.form.get('next_step')})")
                             else:
-                                flash("Менять статус нельзя: достигнута последняя стадия заказа", "danger")
+                                flash("Менять статус нельзя: достигнута последняя стадия бронирования", "danger")
                         else:
                             flash("У вас нет прав", "danger")
                     else:
