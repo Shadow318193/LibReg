@@ -15,8 +15,8 @@ with open("admin_data.txt", encoding="utf-8") as f:
     ADMIN_EMAIL = f.readline().replace("\n", "")
 
 SHOP_NAME = "LibReg"
-COMPANY_NAME = "[Название компании]"
-COMPANY_ABOUT = "[Описание магазина]"
+COMPANY_NAME = "Библиотека"
+COMPANY_ABOUT = "Мы даём вам возможность почитать лучшие произведения от лучших авторов."
 
 THEMES = [
     ("light", "Светлая"),
