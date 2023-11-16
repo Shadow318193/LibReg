@@ -771,15 +771,18 @@ def home():
         update_user_status("Личный кабинет")
         db_sess = db_session.create_session()
         books = db_sess.query(Book).filter(Book.owner == current_user.id)
+        deadline = {}
         products_list = {}
         for book in books:
+            deadline[book.id] = prettify_datetime(book.deadline)["date"]
             if book.product_id not in products_list:
                 product = db_sess.query(Product).filter(Product.id == book.product_id).first()
                 products_list[book.product_id] = product
         t = load_theme()
         return render_template("home.html", title=f"{SHOP_NAME} - личный кабинет", hf_flag=True, THEMES=THEMES,
                                current_user=current_user, main_class="px-2", theme=t, YEAR=datetime.datetime.now().year,
-                               page_name="home", COMPANY_NAME=COMPANY_NAME, books=books, products_list=products_list)
+                               page_name="home", COMPANY_NAME=COMPANY_NAME, books=books, products_list=products_list,
+                               deadline=deadline)
     elif request.method == "POST":
         if "clear_cart" in request.form:
             clear_cart()

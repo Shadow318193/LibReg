@@ -22,7 +22,8 @@
                 <div class="pb-3">
                     <h5 class="card-title text-center">{{ products_list[book.product_id].name }}</h5>
                     <p class="card-text text-center">ID: <b>{{ book.id }}</b></p>
-                    </div>
+                    <p class="card-text text-center">Вернуть: <b>{{ deadline[book.id]}}</b></p>
+                </div>
                 <div>
                     <div class="text-center py-1">
                         <a href="/products/{{ book.product_id }}" class="btn btn-primary w-100">Подробнее</a>
