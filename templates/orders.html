@@ -5,7 +5,7 @@
 <div class="row indent w-100 ms-0">
     {% for order in orders_list[::-1] %}
     <div class="col d-flex justify-content-center px-0">
-        <div class="card {% if order.deadline >= date %}card-theme{% else %}card-theme-danger{% endif %} text-bg-{{ theme }} text-theme-primary border-color-theme m-3 product-width">
+        <div class="card {% if order.deadline >= date or order.status == MAX_ORDER_STATUS %}card-theme{% else %}card-theme-danger{% endif %} text-bg-{{ theme }} text-theme-primary border-color-theme m-3 product-width">
             <div class="card-body">
                 <h5 class="card-title text-center">Список забронированных книг №{{ order.id }}</h5>
                 <p class="card-text text-center">Статус: <b>{{ ORDER_STATUS[order.status] }}</b></p>

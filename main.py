@@ -1326,7 +1326,8 @@ def orders():
         return render_template("orders.html", title=f"{SHOP_NAME} - списки", hf_flag=True, current_user=current_user,
                                THEMES=THEMES, main_class="px-2", theme=t, YEAR=datetime.datetime.now().year,
                                page_name="orders", COMPANY_NAME=COMPANY_NAME, orders_list=orders_list,
-                               ORDER_STATUS=ORDER_STATUS, orders_list_mod=orders_list_mod, date=datetime.datetime.now())
+                               ORDER_STATUS=ORDER_STATUS, orders_list_mod=orders_list_mod, date=datetime.datetime.now(),
+                               MAX_ORDER_STATUS=max(ORDER_STATUS.keys()))
     elif request.method == "POST":
         return redirect("/orders")
 
