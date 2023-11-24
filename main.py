@@ -782,7 +782,7 @@ def home():
         return render_template("home.html", title=f"{SHOP_NAME} - личный кабинет", hf_flag=True, THEMES=THEMES,
                                current_user=current_user, main_class="px-2", theme=t, YEAR=datetime.datetime.now().year,
                                page_name="home", COMPANY_NAME=COMPANY_NAME, books=books, products_list=products_list,
-                               deadline=deadline)
+                               deadline=deadline, date=datetime.datetime.now())
     elif request.method == "POST":
         if "clear_cart" in request.form:
             clear_cart()
@@ -1318,15 +1318,15 @@ def orders():
             orders_list = list(db_sess.query(Order).filter(Order.poster_id == current_user.id))
             orders_list_mod = list(db_sess.query(Order).filter(Order.poster_id != current_user.id,
                                                                Order.status < max(ORDER_STATUS.keys()),))
-            write_log(f"Список заказов, показанных пользователю {current_user.name} (ID - {current_user.id}): "
-                      f"{orders_list if orders_list else 'пусто'}")
+            write_log(f"Список забронированных книг, показанных пользователю {current_user.name} "
+                      f"(ID - {current_user.id}): {orders_list if orders_list else 'пусто'}")
             if current_user.is_admin or current_user.is_moderator:
                 write_log("Так как данный пользователь - модератор или админ, то ему ещё были показаны "
-                          f"активные заказы: {orders_list_mod if orders_list_mod else 'пусто'}")
-        return render_template("orders.html", title=f"{SHOP_NAME} - заказы", hf_flag=True, current_user=current_user,
+                          f"активные списки: {orders_list_mod if orders_list_mod else 'пусто'}")
+        return render_template("orders.html", title=f"{SHOP_NAME} - списки", hf_flag=True, current_user=current_user,
                                THEMES=THEMES, main_class="px-2", theme=t, YEAR=datetime.datetime.now().year,
                                page_name="orders", COMPANY_NAME=COMPANY_NAME, orders_list=orders_list,
-                               ORDER_STATUS=ORDER_STATUS, orders_list_mod=orders_list_mod)
+                               ORDER_STATUS=ORDER_STATUS, orders_list_mod=orders_list_mod, date=datetime.datetime.now())
     elif request.method == "POST":
         return redirect("/orders")
 
@@ -1427,7 +1427,8 @@ def cart():
         t = load_theme()
         return render_template("cart.html", title=f"{SHOP_NAME} - страница бронирования книг", hf_flag=True,
                                current_user=current_user, main_class="px-2", theme=t, YEAR=datetime.datetime.now().year,
-                               page_name="cart", COMPANY_NAME=COMPANY_NAME, THEMES=THEMES, products_list=products_list)
+                               page_name="cart", COMPANY_NAME=COMPANY_NAME, THEMES=THEMES, products_list=products_list,
+                               MAX_WEEKS=MAX_WEEKS, MIN_WEEKS=MIN_WEEKS)
     elif request.method == "POST":
         if "clear_cart" in request.form:
             clear_cart()
@@ -1467,6 +1468,9 @@ def cart():
                     if session.get("cart_changed"):
                         flash("Бронирование было предотвращено из-за изменений в данных некоторых книг")
                         session["cart_changed"] = False
+                        return redirect("/cart")
+                    if not MIN_WEEKS <= int(request.form.get("weeks")) <= MAX_WEEKS:
+                        flash("Кол-во недель введено неправильно", "danger")
                         return redirect("/cart")
                     db_sess = db_session.create_session()
                     order = Order()

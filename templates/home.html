@@ -16,8 +16,8 @@
 <div class="indent">
     <div style="overflow: auto; display: flex; flex-direction: row;" class="border border-color-theme border-round">
         {% for book in books %}
-        <div class="card card-theme text-theme-primary border-color-theme m-3 product-width">
-            <a href="/products/{{ book.product_id }}" class="border-bottom border-color-theme"><img src="/static/media/from_users/{{ products_list[book.product_id].image_preview }}" class="card-img-top" style="object-fit: cover; background: #fff;" alt="{{ products_list[book.product_id].name }}"></a>
+        <div class="card {% if book.deadline >= date %}card-theme{% else %}card-theme-danger{% endif %} text-theme-primary border-color-theme m-3 product-width">
+            <a href="/products/{{ book.product_id }}" class="border-bottom {% if book.deadline >= date %}border-color-theme{% else %}border-color-theme-danger{% endif %}"><img src="/static/media/from_users/{{ products_list[book.product_id].image_preview }}" class="card-img-top" style="object-fit: cover; background: #fff;" alt="{{ products_list[book.product_id].name }}"></a>
             <div class="card-body d-flex justify-content-between" style="flex-direction: column;">
                 <div class="pb-3">
                     <h5 class="card-title text-center">{{ products_list[book.product_id].name }}</h5>

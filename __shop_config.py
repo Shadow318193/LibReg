@@ -45,6 +45,9 @@ BOOK_STATUS = {
 TAGS_COUNT_IN_RECS = 20
 PRODUCTS_IN_INDEX = 10
 
+MIN_WEEKS = 1
+MAX_WEEKS = 4
+
 
 if __name__ == "__main__":
     print(ADMIN_PASSWORD)

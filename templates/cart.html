@@ -44,8 +44,8 @@
         <label for="floatingName">Имя</label>
     </div>
     <div class="form-floating d-flex justify-content-center">
-        <input type="number" class="form-control form-control-end" id="floatingWeeks" name="weeks" placeholder="Недели (от 1 до 4)" value="{% if session.get('weeks') %}{{ session.get('weeks') }}{% else %}1{% endif %}">
-        <label for="floatingName">Кол-во недель, на которое вы хотите взять книгу (от 1 до 4)</label>
+        <input type="number" class="form-control form-control-end" id="floatingWeeks" name="weeks" placeholder="Недели (от {{ MIN_WEEKS }} до {{ MAX_WEEKS }})" value="{% if session.get('weeks') %}{{ session.get('weeks') }}{% else %}1{% endif %}">
+        <label for="floatingName">Кол-во недель, на которое вы хотите взять книгу (от {{ MIN_WEEKS }} до {{ MAX_WEEKS }})</label>
     </div>
     <button type="submit" name="make_order" class="btn btn-primary w-100 py-2">Оформить</button>
 </form>
